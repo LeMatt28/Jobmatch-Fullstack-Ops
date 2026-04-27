@@ -12,12 +12,49 @@ enum Role {
   ADMIN
 }
 
+enum ContractType {
+  CDI
+  CDD
+  STAGE
+  ALTERNANCE
+  FREELANCE
+}
+
 model User {
+  id          Int          @id @default(autoincrement())
+  email       String       @unique
+  password    String
+  name        String
+  role        Role         @default(USER)
+  savedOffers SavedOffer[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Offer {
+  id           Int          @id @default(autoincrement())
+  title        String
+  company      String
+  location     String
+  contractType ContractType
+  description  String
+  salaryMin    Int?
+  salaryMax    Int?
+  tags         String[]
+  sourceId     String       @unique
+  publishedAt  DateTime
+  isActive     Boolean      @default(true)
+  savedBy      SavedOffer[]
+  createdAt    DateTime     @default(now())
+}
+
+model SavedOffer {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role     @default(USER)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  offer     Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  offerId   Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  @@unique([userId, offerId])
 }
