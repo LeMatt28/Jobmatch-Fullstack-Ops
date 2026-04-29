@@ -22,3 +22,7 @@ jobs:
       - name: Installer les dépendances
         working-directory: ./BACKEND
         run: npm install
+
+      - name: Vérifier le format Prettier
+        working-directory: ./BACKEND
+        run: npm run format:check
