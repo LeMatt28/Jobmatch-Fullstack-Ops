@@ -20,5 +20,4 @@ jobs:
           node-version: 20
 
       - name: Installer les dépendances
-        working-directory: ./BACKEND
         run: npm install
