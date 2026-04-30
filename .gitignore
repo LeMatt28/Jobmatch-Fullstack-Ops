@@ -1,6 +1,5 @@
 # Fichiers sensibles
 .env
-<<<<<<< HEAD
 .env.*
 !.env.example
 *.key
@@ -75,7 +74,3 @@ coverage/
 .eslintcache
 .stylelintcache
 *.turbo
-=======
-.venv
-.claude
->>>>>>> Integration-Modele
