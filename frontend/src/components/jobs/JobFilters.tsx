@@ -197,7 +197,6 @@ export function JobFilters({ className, totalResults }: JobFiltersProps) {
             <SelectValue placeholder="Toutes les dates" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Toutes les dates</SelectItem>
             {PUBLISHED_OPTIONS.map((o) => (
               <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
             ))}

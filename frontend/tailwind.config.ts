@@ -58,6 +58,7 @@ const config: Config = {
         // Texte
         'text-primary': '#2D3748',
         'text-secondary': '#718096',
+        'text-disabled': '#A0AEC0',
         // shadcn/ui compat
         card: { DEFAULT: '#FFFFFF', foreground: '#2D3748' },
         popover: { DEFAULT: '#FFFFFF', foreground: '#2D3748' },
