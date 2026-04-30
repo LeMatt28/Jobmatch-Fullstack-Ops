@@ -3,6 +3,8 @@ export type { HeaderProps } from './Header'
 
 export { Footer } from './Footer'
 
+export { NotificationDropdown } from './NotificationDropdown'
+
 export { Sidebar } from './Sidebar'
 export type { SidebarProps } from './Sidebar'
 

@@ -1,10 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Menu } from 'lucide-react'
+import React from 'react'
 import { Header } from './Header'
-import { Sidebar } from './Sidebar'
-import { Button } from '@/components/ui/button'
+import { Footer } from './Footer'
 
 export interface DashboardNavProps {
   isAdmin?: boolean
@@ -14,10 +12,8 @@ export interface DashboardNavProps {
 }
 
 export function DashboardLayout({ isAdmin = false, userName, onLogout, children }: DashboardNavProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header
         isAuthenticated
         isAdmin={isAdmin}
@@ -25,37 +21,17 @@ export function DashboardLayout({ isAdmin = false, userName, onLogout, children 
         onLogout={onLogout}
       />
 
-      <div className="flex">
-        {/* Mobile sidebar toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="fixed bottom-4 left-4 z-50 lg:hidden shadow-card border border-border bg-surface"
-          onClick={() => setSidebarOpen(true)}
-          aria-label="Ouvrir la navigation"
-          aria-controls="sidebar"
-          aria-expanded={sidebarOpen}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+      <main
+        id="main-content"
+        className="flex-1"
+        tabIndex={-1}
+      >
+        <div className="page-container py-6 animate-fade-in">
+          {children}
+        </div>
+      </main>
 
-        <Sidebar
-          isAdmin={isAdmin}
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
-
-        {/* Main content */}
-        <main
-          id="main-content"
-          className="flex-1 lg:ml-64 min-h-[calc(100vh-4rem)]"
-          tabIndex={-1}
-        >
-          <div className="page-container py-6 animate-fade-in">
-            {children}
-          </div>
-        </main>
-      </div>
+      <Footer />
     </div>
   )
 }
