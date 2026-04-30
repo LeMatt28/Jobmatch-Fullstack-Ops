@@ -65,12 +65,6 @@ Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
 
-# Package manager locks (keep only one)
-# Uncomment the ones you don't use:
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
-
 # Coverage
 coverage/
 .nyc_output/

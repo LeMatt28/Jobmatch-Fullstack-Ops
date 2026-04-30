@@ -7,13 +7,11 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8080/api}
-        NEXT_PUBLIC_API_KEY: ${NEXT_PUBLIC_API_KEY:-}
     container_name: jobaggregator-frontend
     ports:
       - '3000:3000'
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://backend:8080/api}
-      - NEXT_PUBLIC_API_KEY=${NEXT_PUBLIC_API_KEY:-}
     depends_on:
       - backend
     networks:
