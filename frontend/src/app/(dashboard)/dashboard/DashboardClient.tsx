@@ -6,16 +6,18 @@ import { StatsCard } from '@/components/dashboard/StatsCard'
 import { RecentJobs } from '@/components/dashboard/RecentJobs'
 import { SalaryDistribution } from '@/components/data-feature/SalaryDistribution'
 import { JobTrends } from '@/components/data-feature/JobTrends'
-import { JobRecommendations } from '@/components/ai-feature/JobRecommendations'
 import { JobSearchBar } from '@/components/jobs/JobSearchBar'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { useAuth } from '@/features/auth/hooks/useAuth'
-import { useAnalyticsSummary } from '@/features/data-feature/hooks/useJobAnalytics'
+import { useAnalyticsSummary, useTrendsAnalytics } from '@/features/data-feature/hooks/useJobAnalytics'
 import { useRouter } from 'next/navigation'
 import { ROUTES } from '@/lib/constants/routes'
 
 export function DashboardClient() {
   const { user } = useAuth()
   const { data: summary } = useAnalyticsSummary()
+  const { data: trends } = useTrendsAnalytics()
   const router = useRouter()
 
   const firstName = user?.firstName ?? 'vous'
@@ -104,11 +106,30 @@ export function DashboardClient() {
           </section>
         </div>
 
-        {/* Right column — IA feature */}
+        {/* Right column — Top tags/skills */}
         <div className="space-y-6">
-          <section aria-labelledby="ai-title">
-            <h2 id="ai-title" className="sr-only">Recommandations IA</h2>
-            <JobRecommendations />
+          <section aria-labelledby="tags-title">
+            <h2 id="tags-title" className="sr-only">Keywords extraits par l'IA</h2>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
+                  Top keywords IA
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2" role="list" aria-label="Keywords extraits par l'IA">
+                  {(trends?.topSkills ?? []).map(({ skill, count, growth }) => (
+                    <div key={skill} role="listitem" title={`${count} offres · +${growth}%`}>
+                      <Badge variant="outline" className="cursor-default">
+                        {skill}
+                        <span className="ml-1.5 text-xs text-text-disabled">{count}</span>
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </section>
         </div>
       </div>

@@ -4,8 +4,8 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  LayoutDashboard, Briefcase, User, BarChart2,
-  Sparkles, Shield, Users, FileText, X,
+  LayoutDashboard, Briefcase, BarChart2,
+  Shield, Users, FileText, X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { Button } from '@/components/ui/button'
@@ -18,14 +18,12 @@ interface SidebarLink {
 }
 
 const USER_LINKS: SidebarLink[] = [
-  { href: ROUTES.dashboard, label: 'Dashboard',      icon: LayoutDashboard },
-  { href: ROUTES.jobs,      label: 'Offres',          icon: Briefcase },
-  { href: ROUTES.profile,   label: 'Mon profil',      icon: User },
+  { href: ROUTES.dashboard, label: 'Dashboard', icon: LayoutDashboard },
+  { href: ROUTES.jobs,      label: 'Offres',    icon: Briefcase },
 ]
 
 const DATA_LINKS: SidebarLink[] = [
   { href: '/dashboard#analytics', label: 'Analytiques', icon: BarChart2 },
-  { href: '/dashboard#ai',        label: 'Recommandations', icon: Sparkles },
 ]
 
 const ADMIN_LINKS: SidebarLink[] = [

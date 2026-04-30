@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Briefcase, Bell, User, LogOut, Settings } from 'lucide-react'
+import { Menu, X, Briefcase, Bell, User, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
 import { ROUTES } from '@/lib/constants/routes'
@@ -103,12 +103,6 @@ export function Header({ isAuthenticated = false, userName, isAdmin = false, onL
                   </Button>
                   {/* Dropdown */}
                   <div className="absolute right-0 top-full mt-1 hidden group-hover:block w-48 rounded-lg border border-border bg-surface shadow-modal py-1 z-50">
-                    <Link
-                      href={ROUTES.profile}
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-text-secondary hover:bg-muted hover:text-text-primary"
-                    >
-                      <Settings className="h-4 w-4" /> Profil
-                    </Link>
                     <button
                       onClick={onLogout}
                       className="flex w-full items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-red-50"
@@ -170,9 +164,6 @@ export function Header({ isAuthenticated = false, userName, isAdmin = false, onL
                     {link.label}
                   </Link>
                 ))}
-                <Link href={ROUTES.profile} onClick={() => setMobileOpen(false)} className="px-3 py-2 text-sm text-text-secondary">
-                  Profil
-                </Link>
                 <button onClick={onLogout} className="text-left px-3 py-2 text-sm text-destructive">
                   Déconnexion
                 </button>

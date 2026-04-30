@@ -22,11 +22,11 @@ async function logoutRequest(): Promise<void> {
 }
 
 export interface UseAuthReturn {
-  user: ReturnType<typeof useAuthStore>['user']
+  user: import('../types/auth.types').User | null
   isAuthenticated: boolean
   isAdmin: boolean
-  login: (credentials: LoginCredentials) => Promise<void>
-  register: (credentials: RegisterCredentials) => Promise<void>
+  login: (credentials: LoginCredentials) => Promise<AuthResponse>
+  register: (credentials: RegisterCredentials) => Promise<AuthResponse>
   logout: () => Promise<void>
   isLoginLoading: boolean
   isRegisterLoading: boolean
