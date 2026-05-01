@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/features/auth/hooks/useAuth'
@@ -30,11 +30,12 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="mb-8 text-center">
+    <div className="w-full">
+      {/* Header */}
+      <div className="mb-8">
         <h1 className="text-2xl font-bold text-text-primary">Bon retour !</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Connectez-vous pour accéder à vos offres
+        <p className="mt-1.5 text-sm text-text-secondary">
+          Connectez-vous pour accéder à vos offres personnalisées
         </p>
       </div>
 
@@ -49,12 +50,14 @@ export function LoginForm() {
           <div
             role="alert"
             aria-live="assertive"
-            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
+            className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3"
           >
-            {loginError}
+            <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" aria-hidden="true" />
+            <p className="text-sm text-red-600">{loginError}</p>
           </div>
         )}
 
+        {/* Email */}
         <Input
           {...register('email')}
           label="Adresse email"
@@ -65,38 +68,57 @@ export function LoginForm() {
           required
         />
 
-        <div className="relative">
-          <Input
-            {...register('password')}
-            label="Mot de passe"
-            type={showPassword ? 'text' : 'password'}
-            autoComplete="current-password"
-            placeholder="••••••••"
-            error={errors.password?.message}
-            required
+        {/* Password */}
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="password" className="text-sm font-medium text-text-primary">
+            Mot de passe <span className="text-destructive" aria-hidden="true">*</span>
+          </label>
+          <div className="relative">
+            <input
+              {...register('password')}
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              placeholder="••••••••"
+              aria-invalid={!!errors.password}
+              aria-describedby={errors.password ? 'password-error' : undefined}
+              className={cn(
+                'flex h-10 w-full rounded-md border bg-surface px-3 py-2 pr-10 text-sm',
+                'text-text-primary placeholder:text-text-disabled',
+                'transition-colors duration-150',
+                'focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                errors.password ? 'border-destructive focus:ring-destructive' : 'border-border'
+              )}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          {errors.password && (
+            <p id="password-error" role="alert" className="text-xs text-destructive font-medium">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+
+        {/* Remember me */}
+        <div className="flex items-center gap-2">
+          <input
+            id="remember"
+            type="checkbox"
+            className="h-4 w-4 rounded border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 accent-primary"
           />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
-            className={cn(
-              'absolute right-3 text-text-secondary hover:text-text-primary transition-colors',
-              errors.password ? 'top-8' : 'top-9'
-            )}
-          >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </button>
+          <label htmlFor="remember" className="text-sm text-text-secondary select-none">
+            Se souvenir de moi
+          </label>
         </div>
 
-        <div className="flex items-center justify-end">
-          <Link
-            href="/forgot-password"
-            className="text-sm text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm"
-          >
-            Mot de passe oublié ?
-          </Link>
-        </div>
-
+        {/* Submit */}
         <Button
           type="submit"
           className="w-full"
@@ -113,6 +135,7 @@ export function LoginForm() {
           )}
         </Button>
 
+        {/* Switch to register */}
         <p className="text-center text-sm text-text-secondary">
           Pas encore de compte ?{' '}
           <Link

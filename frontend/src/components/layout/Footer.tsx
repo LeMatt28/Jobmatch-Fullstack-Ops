@@ -4,20 +4,11 @@ import { Briefcase } from 'lucide-react'
 
 const FOOTER_SECTIONS = [
   {
-    title: 'Produit',
+    title: 'Navigation',
     links: [
-      { href: '/dashboard',     label: 'Dashboard' },
-      { href: '/jobs',          label: 'Offres d\'emploi' },
-      { href: '/profile',       label: 'Mon espace' },
-      { href: '/notifications', label: 'Notifications' },
-    ],
-  },
-  {
-    title: 'Support',
-    links: [
-      { href: '/docs',    label: 'Documentation' },
-      { href: '/faq',     label: 'FAQ' },
-      { href: '/contact', label: 'Contact' },
+      { href: '/',          label: 'Accueil' },
+      { href: '/jobs',      label: 'Offres d\'emploi' },
+      { href: '/dashboard', label: 'Dashboard' },
     ],
   },
   {
@@ -35,13 +26,13 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-surface" role="contentinfo">
-      <div className="page-container py-10">
+      <div className="page-container py-8">
 
         {/* Main grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
 
           {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
+          <div>
             <div className="flex items-center gap-2 mb-3">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
                 <Briefcase className="h-3.5 w-3.5 text-white" aria-hidden="true" />
@@ -78,15 +69,10 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-text-disabled">
+        <div className="mt-8 pt-6 border-t border-border">
+          <p className="text-xs text-text-disabled text-center sm:text-left">
             © {year} JobAggregator — Epitech. Tous droits réservés.
           </p>
-          <div className="flex items-center gap-4">
-            <Link href="/legal/terms"   className="text-xs text-text-disabled hover:text-primary transition-colors">CGU</Link>
-            <Link href="/legal/privacy" className="text-xs text-text-disabled hover:text-primary transition-colors">Confidentialité</Link>
-            <Link href="/legal/cookies" className="text-xs text-text-disabled hover:text-primary transition-colors">Cookies</Link>
-          </div>
         </div>
       </div>
     </footer>
