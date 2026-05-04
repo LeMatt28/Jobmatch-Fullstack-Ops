@@ -35,14 +35,15 @@ model Offer {
   id           Int          @id @default(autoincrement())
   title        String
   company      String
-  location     String
-  contractType ContractType
+  location     String?
+  contractType ContractType?
   description  String
   salaryMin    Int?
   salaryMax    Int?
   tags         String[]
   sourceId     String       @unique
-  publishedAt  DateTime
+  publishedAt  DateTime?
+  remote       String?
   isActive     Boolean      @default(true)
   savedBy      SavedOffer[]
   createdAt    DateTime     @default(now())
