@@ -50,35 +50,31 @@ router.put("/me", verifyToken, async (req: Request, res: Response) => {
   }
 });
 
-
-
 router.get("/me/saved-offers", verifyToken, async (req: Request, res: Response) => {
-    try {
-        const userId = req.user!.id;
-        const savedOffers = await prisma.savedOffer.findMany({
-          where: { userId },
-          include: { offer: true },
-        });
-        res.status(200).json(savedOffers);
-    } catch(err) {
-        res.status(500).json({ error: "Erreur serveur" });
-    }
-})
-
+  try {
+    const userId = req.user!.id;
+    const savedOffers = await prisma.savedOffer.findMany({
+      where: { userId },
+      include: { offer: true },
+    });
+    res.status(200).json(savedOffers);
+  } catch (err) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
 
 router.post("/me/saved-offers/:id", verifyToken, async (req: Request, res: Response) => {
-    try {
-        const userId = req.user!.id;
-        const offerId = parseInt(req.params.id as string)
-        const savedOffer = await prisma.savedOffer.create({
-          data: { userId, offerId },
-        });
-        res.status(201).json(savedOffer);
-    } catch (err) {
-        res.status(500).json({ error: "Erreur serveur" });
-    }
-})
-
+  try {
+    const userId = req.user!.id;
+    const offerId = parseInt(req.params.id as string);
+    const savedOffer = await prisma.savedOffer.create({
+      data: { userId, offerId },
+    });
+    res.status(201).json(savedOffer);
+  } catch (err) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
 
 router.delete("/me/saved-offers/:id", verifyToken, async (req: Request, res: Response) => {
   try {
@@ -92,6 +88,5 @@ router.delete("/me/saved-offers/:id", verifyToken, async (req: Request, res: Res
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
-
 
 export default router;
