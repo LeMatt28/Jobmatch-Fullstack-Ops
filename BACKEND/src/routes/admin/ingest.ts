@@ -5,4 +5,9 @@ import { VerifyAdmin } from "../../middlewares/VerifyAdmin";
 
 const router = Router();
 
-router.post("/admin/ingest", verifyToken, VerifyAdmin, async (req: Request, res: Response) => {});
+router.post(
+  "/admin/ingest",
+  verifyToken,
+  VerifyAdmin,
+  async (req: Request, res: Response) => {},
+);

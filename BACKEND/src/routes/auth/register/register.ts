@@ -26,7 +26,9 @@ router.post("/register", async (req: Request, res: Response) => {
       data: { email, password: HashPassword, name },
     });
 
-    return res.status(201).json({ message: "Utilisateur crée avec succès.", UserId: user.id });
+    return res
+      .status(201)
+      .json({ message: "Utilisateur crée avec succès.", UserId: user.id });
   } catch (err) {
     return res.status(500).json({ message: "Erreur serveur" });
   }

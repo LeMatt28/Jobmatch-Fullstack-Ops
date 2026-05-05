@@ -8,6 +8,7 @@ import { errorHandle } from "./middlewares/HandleError";
 import offers from "./routes/offers/offers";
 import me from "./routes/user/me";
 import users from "./routes/user/users";
+import stats from "./routes/stats/stats";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use("/auth", login);
 app.use("/", offers);
 app.use("/", me);
 app.use("/", users);
+app.use("/", stats);
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
