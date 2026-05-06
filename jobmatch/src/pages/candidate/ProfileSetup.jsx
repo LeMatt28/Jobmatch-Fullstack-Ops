@@ -4,9 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../hooks/useAuth'
 import { updateProfile } from '../../services/candidateService'
 import { TagInput } from '../../components/TagInput'
-import { CityAutocomplete } from '../../components/CityAutocomplete'
-import { RangeSlider } from '../../components/RangeSlider'
-import { WorkModePicker } from '../../components/WorkModePicker'
 import { Button } from '../../components/ui/Button'
 import { Spinner } from '../../components/ui/Spinner'
 
@@ -25,7 +22,7 @@ export default function ProfileSetup() {
   const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
-    location: '', salary: [35000, 60000], workMode: null, hybridDays: 2, contractTypes: [],
+    location: '', salaryExpected: '', mobility: false, contractTypes: [],
     skills: [], softSkills: [],
     experience: '', level: 'Confirmé',
   })
@@ -76,23 +73,28 @@ export default function ProfileSetup() {
               <h2 className="text-xl font-bold text-brand-900">Informations générales</h2>
 
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700">Localisation</label>
-                <CityAutocomplete value={form.location} onChange={(v) => set('location', v)} />
+                <label htmlFor="location" className="text-sm font-medium text-gray-700">Localisation</label>
+                <input id="location" className="border border-gray-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 rounded-xl px-4 py-2.5 text-sm outline-none" placeholder="Paris" value={form.location} onChange={(e) => set('location', e.target.value)} />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700">Salaire attendu</label>
-                <RangeSlider value={form.salary} onChange={(v) => set('salary', v)} />
+                <label htmlFor="salary" className="text-sm font-medium text-gray-700">Salaire attendu</label>
+                <div className="relative">
+                  <input id="salary" type="number" className="border border-gray-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 rounded-xl px-4 py-2.5 text-sm outline-none w-full pr-16" placeholder="45000" value={form.salaryExpected} onChange={(e) => set('salaryExpected', e.target.value)} />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400">€/an</span>
+                </div>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700">Mode de travail</label>
-                <WorkModePicker
-                  value={form.workMode}
-                  onChange={(v) => set('workMode', v)}
-                  hybridDays={form.hybridDays}
-                  onHybridDaysChange={(v) => set('hybridDays', v)}
-                />
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => set('mobility', !form.mobility)}
+                  className={`relative w-11 h-6 rounded-full transition-colors ${form.mobility ? 'bg-brand-600' : 'bg-gray-200'}`}
+                  role="switch" aria-checked={form.mobility} aria-label="Mobilité géographique"
+                >
+                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.mobility ? 'translate-x-5' : ''}`} />
+                </button>
+                <label className="text-sm text-gray-700">Mobilité géographique</label>
               </div>
 
               <div className="flex flex-col gap-2">
