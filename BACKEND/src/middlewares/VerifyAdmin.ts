@@ -9,7 +9,7 @@ export const VerifyAdmin = (
   next: NextFunction,
 ): void => {
   const user = req.user as JwtPayload;
-  if (!user || user.role !== "ADMIN") {
+  if (!user || user.role !== "admin") {
     res.status(403).json({ error: "Accès refusé, admin requis" });
     return;
   }
