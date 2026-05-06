@@ -1,7 +1,9 @@
+//imports
 import { Request, Response, NextFunction } from "express";
 import JWT from "jsonwebtoken";
 import { JwtPayload } from "../types/JWTPayload";
 
+// middleware token
 export const verifyToken = (
   req: Request,
   res: Response,

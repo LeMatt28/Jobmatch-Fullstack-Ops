@@ -1,6 +1,8 @@
+// imports
 import { Request, Response, NextFunction } from "express";
 import { JwtPayload } from "../types/JWTPayload";
 
+//middleware verifier si admin
 export const VerifyAdmin = (
   req: Request,
   res: Response,
