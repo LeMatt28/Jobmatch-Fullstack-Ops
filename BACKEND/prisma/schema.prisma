@@ -8,7 +8,8 @@ datasource db {
 }
 
 enum Role {
-  USER
+  CANDIDATE
+  COMPAGNY
   ADMIN
 }
 
@@ -20,42 +21,128 @@ enum ContractType {
   FREELANCE
 }
 
-model User {
-  id          Int          @id @default(autoincrement())
-  email       String       @unique
-  password    String
-  name        String
-  role        Role         @default(USER)
-  savedOffers SavedOffer[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+enum SwipeDirection {
+  LIKE
+  DISLIKE
+}
+
+enum MatchStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+}
+
+
+
+model Candidate {
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  password       String
+  name           String
+  location       String?
+  skills         String[]
+  experience     String?
+  availability   String?
+  salaryExpected Int?
+  mobility       Boolean   @default(false)
+  softSkills     String[]
+  scoreCandidat  Float?
+  isPremium      Boolean   @default(false)
+  swipes         Swipe[]
+  matches        Match[]
+  reviews        CandidateReview[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+
+model Company {
+  id                Int              @id @default(autoincrement())
+  email             String           @unique
+  password          String
+  name              String
+  sector            String?
+  size              String?
+  description       String?
+  values            String[]
+  scoreReliability  Float?
+  subscriptionTier  SubscriptionTier @default(FREE)
+  offers            Offer[]
+  reviews           CompanyReview[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 }
 
 model Offer {
-  id           Int          @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId    Int
   title        String
-  company      String
+  description  String
+  stack        String[]
   location     String?
   contractType ContractType?
-  description  String
   salaryMin    Int?
   salaryMax    Int?
-  tags         String[]
-  sourceId     String       @unique
-  publishedAt  DateTime?
   remote       String?
-  isActive     Boolean      @default(true)
-  savedBy      SavedOffer[]
-  createdAt    DateTime     @default(now())
+  isActive     Boolean       @default(true)
+  swipes       Swipe[]
+  matches      Match[]
+  createdAt    DateTime      @default(now())
 }
 
-model SavedOffer {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  offer     Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
-  offerId   Int
-  createdAt DateTime @default(now())
 
-  @@unique([userId, offerId])
+model Swipe {
+  id          Int            @id @default(autoincrement())
+  candidate   Candidate      @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId Int
+  offer       Offer          @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  offerId     Int
+  direction   SwipeDirection
+  createdAt   DateTime       @default(now())
+
+  @@unique([candidateId, offerId])
+}
+
+
+model Match {
+  id          Int         @id @default(autoincrement())
+  candidate   Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId Int
+  offer       Offer       @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  offerId     Int
+  messageIA   String?
+  status      MatchStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+
+  @@unique([candidateId, offerId])
+}
+
+
+
+model CandidateReview {
+  id          Int       @id @default(autoincrement())
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId Int
+  companyId   Int
+  score       Int
+  comment     String?
+  createdAt   DateTime  @default(now())
+}
+
+
+model CompanyReview {
+  id          Int      @id @default(autoincrement())
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId   Int
+  candidateId Int
+  score       Int
+  comment     String?
+  createdAt   DateTime @default(now())
 }
