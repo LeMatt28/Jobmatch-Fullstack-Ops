@@ -1,0 +1,44 @@
+import { mockOffers } from './offers'
+
+export const mockMatches = [
+  {
+    id: 'm1',
+    offer: mockOffers[0],
+    messageIA: "Votre profil React et votre expérience en fintech correspondent parfaitement à notre stack. Votre score de compatibilité est exceptionnel — nous serions ravis d'échanger avec vous !",
+    status: 'new',
+    createdAt: '2025-05-01T14:30:00Z',
+    contact: { name: 'Marie Laurent', role: 'Responsable RH', email: 'marie.laurent@techflow.com' },
+  },
+  {
+    id: 'm2',
+    offer: mockOffers[2],
+    messageIA: "Votre maîtrise de Kubernetes et votre certification AWS sont exactement ce que nous recherchons. Votre parcours chez des startups à forte croissance est un vrai plus pour notre équipe SRE.",
+    status: 'new',
+    createdAt: '2025-05-02T09:15:00Z',
+    contact: { name: 'Antoine Moreau', role: 'CTO', email: 'a.moreau@cloudnative.io' },
+  },
+  {
+    id: 'm3',
+    offer: mockOffers[4],
+    messageIA: "Votre expertise Python et votre expérience avec des pipelines de données complexes nous ont séduits. Nous pensons que vous pourriez apporter une vraie valeur à notre équipe Data.",
+    status: 'seen',
+    createdAt: '2025-04-30T16:00:00Z',
+    contact: { name: 'Isabelle Roux', role: 'DRH', email: 'i.roux@dataviz.fr' },
+  },
+  {
+    id: 'm4',
+    offer: mockOffers[3],
+    messageIA: "Votre profil de Product Manager avec une sensibilité technique est rare et précieux. Votre expérience en méthodes agiles et votre approche data-driven correspondent parfaitement à notre culture.",
+    status: 'seen',
+    createdAt: '2025-04-28T11:30:00Z',
+    contact: { name: 'Marc Fontaine', role: 'VP Product', email: 'm.fontaine@fintech.com' },
+  },
+  {
+    id: 'm5',
+    offer: mockOffers[8],
+    messageIA: "Votre background en deep learning et votre expérience de déploiement MLOps sont exactement ce que nous cherchons. Nous travaillons sur des problèmes fascinants de recommandation à grande échelle.",
+    status: 'seen',
+    createdAt: '2025-04-25T14:00:00Z',
+    contact: { name: 'Céline Petit', role: 'Head of AI', email: 'celine.petit@datasciencelab.fr' },
+  },
+]

@@ -1,0 +1,96 @@
+export const mockConversations = [
+  {
+    matchId: 'm1',
+    offer: { id: '1', title: 'Développeur React Senior', company: 'TechFlow' },
+    contact: {
+      name: 'Marie Laurent',
+      role: 'Responsable RH',
+      email: 'marie.laurent@techflow.com',
+      avatar: null,
+    },
+    messages: [
+      {
+        id: 'msg1',
+        senderId: 'ia',
+        type: 'ia_intro',
+        content: "Votre profil React et votre expérience de 4 ans correspondent parfaitement à notre stack. Votre score de compatibilité est de 91/100 — un excellent match !",
+        createdAt: '2025-05-01T10:00:00Z',
+        read: true,
+      },
+      {
+        id: 'msg2',
+        senderId: 'company',
+        content: "Bonjour Sophie, nous avons été impressionnés par votre parcours chez BlaBlaCar. Seriez-vous disponible pour un premier échange cette semaine ?",
+        createdAt: '2025-05-01T14:30:00Z',
+        read: true,
+      },
+      {
+        id: 'msg3',
+        senderId: 'candidate',
+        content: "Bonjour Marie, avec plaisir ! Je suis disponible jeudi après-midi ou vendredi matin. Qu'est-ce qui vous convient le mieux ?",
+        createdAt: '2025-05-01T15:45:00Z',
+        read: true,
+      },
+    ],
+    lastMessage: { content: "Bonjour Marie, avec plaisir ! Je suis disponible...", createdAt: '2025-05-01T15:45:00Z', senderId: 'candidate' },
+    unreadCount: 0,
+  },
+  {
+    matchId: 'm2',
+    offer: { id: '3', title: 'DevOps Engineer', company: 'CloudNative' },
+    contact: {
+      name: 'Antoine Moreau',
+      role: 'CTO',
+      email: 'a.moreau@cloudnative.io',
+      avatar: null,
+    },
+    messages: [
+      {
+        id: 'msg4',
+        senderId: 'ia',
+        type: 'ia_intro',
+        content: "Votre maîtrise de Kubernetes et votre certification AWS correspondent parfaitement aux besoins de CloudNative. Score de compatibilité : 87/100.",
+        createdAt: '2025-05-02T09:00:00Z',
+        read: true,
+      },
+      {
+        id: 'msg5',
+        senderId: 'company',
+        content: "Bonjour ! Votre profil DevOps est exactement ce que nous recherchons. Pouvez-vous nous en dire plus sur votre expérience avec Terraform en production ?",
+        createdAt: '2025-05-02T11:00:00Z',
+        read: false,
+      },
+      {
+        id: 'msg6',
+        senderId: 'company',
+        content: "Nous avons également une question sur votre expérience avec GitLab CI/CD. Avez-vous géré des pipelines complexes multi-environnements ?",
+        createdAt: '2025-05-02T11:05:00Z',
+        read: false,
+      },
+    ],
+    lastMessage: { content: "Nous avons également une question sur votre expérience...", createdAt: '2025-05-02T11:05:00Z', senderId: 'company' },
+    unreadCount: 2,
+  },
+  {
+    matchId: 'm5',
+    offer: { id: '9', title: 'Lead ML Engineer', company: 'DataScienceLab' },
+    contact: {
+      name: 'Céline Petit',
+      role: 'Head of AI',
+      email: 'celine.petit@datasciencelab.fr',
+      avatar: null,
+    },
+    messages: [
+      {
+        id: 'msg7',
+        senderId: 'ia',
+        type: 'ia_intro',
+        content: "Votre background en deep learning et MLOps correspond parfaitement au poste de Lead ML Engineer. Score de compatibilité : 79/100.",
+        createdAt: '2025-04-25T14:00:00Z',
+        read: true,
+      },
+    ],
+    lastMessage: { content: "Votre background en deep learning et MLOps correspond...", createdAt: '2025-04-25T14:00:00Z', senderId: 'ia' },
+    unreadCount: 0,
+  },
+]
