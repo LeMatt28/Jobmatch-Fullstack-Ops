@@ -6,6 +6,9 @@ import { Search, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
 
+const POPULAR_TAGS = ['React', 'Python', 'Product Manager', 'UX Designer', 'DevOps', 'Data Scientist']
+const POPULAR_CITIES = ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Bordeaux', 'Aix-en-Provence']
+
 export function HomeSearchBar() {
   const [query, setQuery] = useState('')
   const [location, setLocation] = useState('')
@@ -21,6 +24,10 @@ export function HomeSearchBar() {
 
   const handleTag = (tag: string) => {
     router.push(`/jobs?q=${encodeURIComponent(tag)}`)
+  }
+
+  const handleCity = (city: string) => {
+    router.push(`/jobs?location=${encodeURIComponent(city)}`)
   }
 
   return (
@@ -80,7 +87,7 @@ export function HomeSearchBar() {
       {/* Popular searches */}
       <div className="mt-4 flex flex-wrap items-center gap-2 justify-center">
         <span className="text-xs text-text-disabled">Populaire :</span>
-        {['React', 'Python', 'Product Manager', 'UX Designer', 'DevOps', 'Data Scientist'].map((tag) => (
+        {POPULAR_TAGS.map((tag) => (
           <button
             key={tag}
             type="button"
@@ -88,6 +95,24 @@ export function HomeSearchBar() {
             className="text-xs px-3 py-1 rounded-full bg-surface border border-border text-text-secondary hover:border-primary hover:text-primary transition-colors"
           >
             {tag}
+          </button>
+        ))}
+      </div>
+
+      {/* City shortcuts */}
+      <div className="mt-3 flex flex-wrap items-center gap-2 justify-center">
+        <span className="text-xs text-text-disabled flex items-center gap-1">
+          <MapPin className="h-3 w-3" aria-hidden="true" />
+          Par ville :
+        </span>
+        {POPULAR_CITIES.map((city) => (
+          <button
+            key={city}
+            type="button"
+            onClick={() => handleCity(city)}
+            className="text-xs px-3 py-1 rounded-full bg-primary-50 border border-primary-100 text-primary hover:bg-primary hover:text-white transition-colors"
+          >
+            {city}
           </button>
         ))}
       </div>
