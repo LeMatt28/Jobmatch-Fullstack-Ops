@@ -1,61 +1,9 @@
 # Audit bcrypt – Stockage des mots de passe
 
-**Date** : 2026-04-29  
-**Auditeur** : Cyber  
-**Fichiers audités** : `login.js`, `register.js`
-
----
-
-## Résultat global
-
-| Critère | Statut |
-|---------|--------|
-| bcrypt utilisé avec salt factor ≥10 | ✅ OK |
-| Stockage sécurisé | ✅ OK |
-| Comparaison sécurisée | ✅ OK |
-| Messages d'erreur | ❌ À corriger |
-| Stockage JWT | ❌ À corriger |
-| Durée JWT | ❌ À corriger |
-
----
-
-## Anomalies détectées
-
-### 1. Fuite d'information (login.js ligne ~12-16)
-**Actuel** : "Utilisateur introuvable" vs "Mot de passe incorrect"  
-**Risque** : Énumération des emails  
-**Correction** : Message unique "Email ou mot de passe incorrect"
-
-### 2. Token dans body JSON (login.js ligne ~24)
-**Actuel** : `res.json({ token })`  
-**Risque** : Vol possible via XSS  
-**Correction** : Cookie HttpOnly
-
-### 3. Durée token trop longue (login.js ligne ~22)
-**Actuel** : `expiresIn: "7d"`  
-**Risque** : Vol prolongé  
-**Correction** : Access token : 15 min, Refresh token : 7 jours avec rotation
-
----
-
-## Correction appliqué
-
-## Actions à mener
-
-| Action | Responsable | Deadline |
-|--------|-------------|----------|
-| Modifier les messages d'erreur login | Back | J+1 |
-| Passer token en cookie HttpOnly | Back | J+1 |
-| Mettre en place access/refresh token (15 min / 7 jours) | Back | J+2 |
-| Vérifier que `password` n'est jamais renvoyé | Back | J+1 |
-
----
-
-# Audit bcrypt – Stockage des mots de passe
-
 **Date initiale** : 2026-04-29  
 **Date des corrections** : 2026-04-29  
-**Auditeur / Correcteur** : Cyber (corrections appliquées directement)
+**Auditeur / Correcteur** : Cyber (corrections appliquées directement)  
+**Fichiers audités** : `login.ts`, `register.ts`
 
 ---
 
@@ -65,32 +13,54 @@ Toutes les anomalies détectées ont été corrigées.
 
 ---
 
+## Checklist d'audit
+
+| Vérification | Statut | Preuve |
+|--------------|--------|--------|
+| `bcrypt` installé | ✅ | `import bcrypt from "bcryptjs"` |
+| Salt factor ≥ 10 | ✅ | `bcrypt.hash(password, 10)` |
+| Mot de passe hashé avant stockage | ✅ | `hashedPassword` avant `prisma.user.create` |
+| Pas de `console.log(password)` | ✅ | Aucun log visible |
+| Pas de stockage en clair | ✅ | Seul le hash est stocké |
+| Comparaison avec `bcrypt.compare` | ✅ | `await bcrypt.compare(password, user.password)` |
+| Champ password jamais renvoyé | ✅ | Seulement `userId` dans réponse |
+| Message d'erreur générique | ✅ | "Identifiants invalides." |
+
+---
+
 ## Anomalies détectées et corrigées
 
 | Anomalie | Correction appliquée | Statut |
 |----------|---------------------|--------|
-| Fuite d'information (message utilisateur introuvable vs mdp incorrect) | Message unique : "Email ou mot de passe incorrect" | ✅ Corrigé |
-| Token JWT renvoyé dans le body JSON | Token stocké en cookie HttpOnly | ✅ Corrigé |
+| Fuite d'information (message spécifique) | Message unique "Identifiants invalides" | ✅ Corrigé |
+| Token JWT dans body JSON | Cookie HttpOnly | ✅ Corrigé |
 | Durée token trop longue (7 jours) | Passage à 15 minutes | ✅ Corrigé |
+| Pas de rate limiting | Ajouté (10/login, 5/register) | ✅ Corrigé |
+| Pas de validation entrées | Ajouté via `express-validator` | ✅ Corrigé |
 
 ---
 
-## Code corrigé (extrait)
+## Code validé
 
-### login.js – avant / après
+### `register.ts` – Extrait clé
 
-**Avant :**
-```javascript
-if (!user)
-    return res.status(400).json({ message: "Utilisateur introuvable." })
-if (!compare)
-    return res.status(401).json({ message: "Mot de passe incorrect." })
-return res.status(200).json({ token })
+```typescript
+const hashedPassword = await bcrypt.hash(password, 10);
+const user = await prisma.user.create({
+    data: { email, password: hashedPassword, name }
+});
+return res.status(201).json({ message: "Utilisateur créé avec succès.", userId: user.id });
 ```
-**Aprés :**
-```javascript
+### 'login.ts' - Extrait clé
+
+```typescript
+const isValid = await bcrypt.compare(password, user.password as string);
 if (!user || !isValid) {
-    return res.status(401).json({ message: "Email ou mot de passe incorrect." })
+    return res.status(401).json({ message: "Identifiants invalides." });
 }
-res.cookie("access_token", accessToken, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 900000 })
-return res.status(200).json({ message: "Authentifié avec succès." })
+res.cookie("access_token", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 15 * 60 * 1000
+});```
