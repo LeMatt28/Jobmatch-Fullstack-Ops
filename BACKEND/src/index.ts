@@ -13,6 +13,7 @@ import offers from "./routes/offers/OfferCrud";
 import swipe from "./routes/offers/swipe";
 import matches from "./routes/matches/matches";
 import company from "./routes/compagny/compagnyCrud";
+import reviews from "./routes/reviews/Reviews";
 
 // env
 dotenv.config();
