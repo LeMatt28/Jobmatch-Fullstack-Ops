@@ -1,0 +1,61 @@
+flowchart TD
+    Candidate["👤 Candidate
+    ─────────────
+    POST /auth/register/candidate
+    POST /auth/login
+    GET  /me
+    PUT  /me
+    GET  /me/matches
+    GET  /me/stats"]
+
+    Company["🏢 Company
+    ─────────────
+    POST /auth/register/company
+    POST /auth/login
+    GET  /company/me
+    PUT  /company/me
+    GET  /company/me/stats
+    GET  /company/:id"]
+
+    Offer["💼 Offer
+    ─────────────
+    POST   /offers
+    GET    /offers/feed
+    GET    /offers/mine
+    GET    /offers/:id
+    PUT    /offers/:id
+    PATCH  /offers/:id/toggle
+    DELETE /offers/:id"]
+
+    Swipe["👆 Swipe
+    ─────────────
+    POST /offers/:id/swipe
+    direction: LIKE / DISLIKE"]
+
+    Match["💚 Match
+    ─────────────
+    GET /me/matches
+    GET /matches/:offerId
+    PATCH /matches/:offerId/:candidateId/favorite
+    messageIA généré par IA"]
+
+    CandidateReview["⭐ CandidateReview
+    ─────────────
+    POST /reviews/candidate/:id
+    par une entreprise"]
+
+    CompanyReview["⭐ CompanyReview
+    ─────────────
+    POST /reviews/company/:id
+    par un candidat"]
+
+    Company -->|"publie"| Offer
+    Candidate -->|"swipe"| Swipe
+    Offer -->|"reçoit"| Swipe
+    Swipe -->|"LIKE → crée"| Match
+    Candidate -->|"consulte"| Match
+    Company -->|"consulte"| Match
+    Company -->|"note"| CandidateReview
+    CandidateReview -->|"concerne"| Candidate
+    Candidate -->|"note"| CompanyReview
+    CompanyReview -->|"concerne"| Company
