@@ -1,4 +1,4 @@
-//imports 
+//imports
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { prisma } from "../../../lib/prisma";
@@ -22,14 +22,13 @@ router.post("/register/candidate", async (req: Request, res: Response) => {
       return res.status(400).json({ error: result.error.flatten() });
     }
     const { email, password, name } = result.data;
-    
+
     //verifie si existe pas deja
     const existing = await prisma.candidate.findUnique({ where: { email } });
     if (existing) {
       return res.status(409).json({ error: "Email déjà utilisé" });
     }
 
-    
     //hash le password
     const hashed = await bcrypt.hash(password, 10);
     //creer le user

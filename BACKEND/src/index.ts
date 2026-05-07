@@ -12,6 +12,7 @@ import me from "./routes/me/me";
 import offers from "./routes/offers/OfferCrud";
 import swipe from "./routes/offers/swipe";
 import matches from "./routes/matches/matches";
+import company from "./routes/compagny/compagnyCrud";
 
 // env
 dotenv.config();
@@ -19,7 +20,6 @@ dotenv.config();
 //back
 const app = express();
 const port = process.env.PORT || 3001;
-
 
 app.use(cors());
 app.use(express.json());
@@ -31,6 +31,7 @@ app.use("/", me);
 app.use("/", offers);
 app.use("/", swipe);
 app.use("/", matches);
+app.use("/", company);
 
 // anti brut force sur la route login
 const authLimiter = rateLimit({

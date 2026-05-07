@@ -1,4 +1,4 @@
-//imports 
+//imports
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { prisma } from "../../../lib/prisma";
@@ -37,7 +37,9 @@ router.post("/register/company", async (req: Request, res: Response) => {
       data: { email, password: hashed, name, sector },
     });
 
-    return res.status(201).json({ message: "Entreprise créée", id: company.id });
+    return res
+      .status(201)
+      .json({ message: "Entreprise créée", id: company.id });
   } catch (err) {
     return res.status(500).json({ error: "Erreur serveur" });
   }

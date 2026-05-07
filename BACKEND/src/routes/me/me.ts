@@ -1,4 +1,3 @@
-
 import { Router, Request, Response } from "express";
 import { prisma } from "../../lib/prisma";
 import { verifyToken } from "../../middlewares/AuthMidlleware";
@@ -15,13 +14,23 @@ router.get("/me", verifyToken, async (req: Request, res: Response) => {
       const candidate = await prisma.candidate.findUnique({
         where: { id },
         select: {
-          id: true, email: true, name: true, location: true,
-          skills: true, softSkills: true, experience: true,
-          availability: true, salaryExpected: true, mobility: true,
-          scoreCandidat: true, isPremium: true, createdAt: true,
+          id: true,
+          email: true,
+          name: true,
+          location: true,
+          skills: true,
+          softSkills: true,
+          experience: true,
+          availability: true,
+          salaryExpected: true,
+          mobility: true,
+          scoreCandidat: true,
+          isPremium: true,
+          createdAt: true,
         },
       });
-      if (!candidate) return res.status(404).json({ error: "Candidat introuvable" });
+      if (!candidate)
+        return res.status(404).json({ error: "Candidat introuvable" });
       return res.status(200).json({ ...candidate, role: "candidate" });
     }
 
@@ -29,12 +38,20 @@ router.get("/me", verifyToken, async (req: Request, res: Response) => {
       const company = await prisma.company.findUnique({
         where: { id },
         select: {
-          id: true, email: true, name: true, sector: true,
-          size: true, description: true, values: true,
-          scoreReliability: true, subscriptionTier: true, createdAt: true,
+          id: true,
+          email: true,
+          name: true,
+          sector: true,
+          size: true,
+          description: true,
+          values: true,
+          scoreReliability: true,
+          subscriptionTier: true,
+          createdAt: true,
         },
       });
-      if (!company) return res.status(404).json({ error: "Entreprise introuvable" });
+      if (!company)
+        return res.status(404).json({ error: "Entreprise introuvable" });
       return res.status(200).json({ ...company, role: "company" });
     }
 
@@ -44,16 +61,22 @@ router.get("/me", verifyToken, async (req: Request, res: Response) => {
   }
 });
 
-
-
 router.put("/me", verifyToken, async (req: Request, res: Response) => {
   try {
     const id = req.user!.id;
     const role = req.user!.role;
 
     if (role === "candidate") {
-      const { name, location, skills, softSkills, experience,
-              availability, salaryExpected, mobility } = req.body;
+      const {
+        name,
+        location,
+        skills,
+        softSkills,
+        experience,
+        availability,
+        salaryExpected,
+        mobility,
+      } = req.body;
       const updated = await prisma.candidate.update({
         where: { id },
         data: {
@@ -67,9 +90,16 @@ router.put("/me", verifyToken, async (req: Request, res: Response) => {
           ...(mobility !== undefined && { mobility }),
         },
         select: {
-          id: true, email: true, name: true, location: true,
-          skills: true, softSkills: true, experience: true,
-          availability: true, salaryExpected: true, mobility: true,
+          id: true,
+          email: true,
+          name: true,
+          location: true,
+          skills: true,
+          softSkills: true,
+          experience: true,
+          availability: true,
+          salaryExpected: true,
+          mobility: true,
         },
       });
       return res.status(200).json(updated);
@@ -87,9 +117,15 @@ router.put("/me", verifyToken, async (req: Request, res: Response) => {
           ...(values && { values }),
         },
         select: {
-          id: true, email: true, name: true, sector: true,
-          size: true, description: true, values: true,
-          scoreReliability: true, subscriptionTier: true,
+          id: true,
+          email: true,
+          name: true,
+          sector: true,
+          size: true,
+          description: true,
+          values: true,
+          scoreReliability: true,
+          subscriptionTier: true,
         },
       });
       return res.status(200).json(updated);
