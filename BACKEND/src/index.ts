@@ -33,6 +33,7 @@ app.use("/", offers);
 app.use("/", swipe);
 app.use("/", matches);
 app.use("/", company);
+app.use("/", reviews);
 
 // anti brut force sur la route login
 const authLimiter = rateLimit({
