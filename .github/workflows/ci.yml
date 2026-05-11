@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: "*"
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  check:
+    runs-on: self-hosted
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v3
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Installer les dépendances
+        working-directory: ./BACKEND
+        run: npm install
+
+      - name: Vérifier le format Prettier
+        working-directory: ./BACKEND
+        run: npm run format:check

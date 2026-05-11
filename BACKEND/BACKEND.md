@@ -1,3 +1,4 @@
+```bash
 cd BACKEND
 
 # Avoir le bon .env
@@ -9,3 +10,4 @@ cd .. (backend)
 npm install
 npm run setup
 npm run dev
+```
