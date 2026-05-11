@@ -1,21 +1,19 @@
-import json
 import os
+import time
 from pathlib import Path
 
 import requests
 
 try:
-    from DATA.detect_duplicates import find_duplicates
     from DATA.normalize import normalize_job
 except ModuleNotFoundError:
-    from detect_duplicates import find_duplicates
     from normalize import normalize_job
 
 
 API_URL = "https://epi-api.welovedevs.com/v1"
-OUTPUT_FILE = Path(__file__).with_name("jobs_preview.json")
-DUPLICATES_FILE = Path(__file__).with_name("jobs_duplicates.json")
 ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
+DEFAULT_PAGE_SIZE = 100
+REQUEST_DELAY_SECONDS = 1.1
 
 
 def read_api_key():
@@ -31,7 +29,7 @@ def read_api_key():
     raise ValueError("WELOVEDEVS_API_KEY introuvable dans l'environnement ou dans .env")
 
 
-def fetch_jobs(page=0, size=10):
+def fetch_jobs_page(page=0, size=DEFAULT_PAGE_SIZE):
     response = requests.get(
         API_URL,
         headers={"X-API-Key": read_api_key()},
@@ -39,22 +37,46 @@ def fetch_jobs(page=0, size=10):
         timeout=15,
     )
     response.raise_for_status()
-    data = response.json()
-    return data.get("values", [])
+    return response.json()
 
 
-def save_jobs(jobs):
-    OUTPUT_FILE.write_text(
-        json.dumps(jobs, indent=4, ensure_ascii=False),
-        encoding="utf-8",
-    )
+def fetch_all_jobs(size=DEFAULT_PAGE_SIZE, delay_seconds=REQUEST_DELAY_SECONDS):
+    jobs = []
+    page = 0
+
+    while True:
+        if page > 0:
+            time.sleep(delay_seconds)
+
+        payload = fetch_jobs_page(page=page, size=size)
+        values = payload.get("values", [])
+
+        if not values:
+            break
+
+        jobs.extend(values)
+
+        if len(values) < size:
+            break
+
+        page += 1
+
+    return jobs
 
 
-def save_duplicates(duplicates):
-    DUPLICATES_FILE.write_text(
-        json.dumps(duplicates, indent=4, ensure_ascii=False),
-        encoding="utf-8",
-    )
+def dedupe_jobs_by_source_id(jobs):
+    seen_source_ids = set()
+    unique_jobs = []
+
+    for job in jobs:
+        source_id = job.get("sourceId")
+        if not source_id or source_id in seen_source_ids:
+            continue
+
+        seen_source_ids.add(source_id)
+        unique_jobs.append(job)
+
+    return unique_jobs
 
 
 def filter_duplicate_jobs(jobs, duplicates):
@@ -62,22 +84,21 @@ def filter_duplicate_jobs(jobs, duplicates):
     return [job for job in jobs if job.get("sourceId") not in duplicate_ids]
 
 
+def get_normalized_jobs(size=DEFAULT_PAGE_SIZE, delay_seconds=REQUEST_DELAY_SECONDS):
+    raw_jobs = fetch_all_jobs(size=size, delay_seconds=delay_seconds)
+    normalized_jobs = [normalize_job(job) for job in raw_jobs]
+    return dedupe_jobs_by_source_id(normalized_jobs)
+
+
 def main():
     try:
-        jobs = fetch_jobs()
+        jobs = get_normalized_jobs()
     except Exception as error:
         print("Erreur API :", error)
         return
 
-    normalized_jobs = [normalize_job(job) for job in jobs]
-    duplicates = find_duplicates(normalized_jobs)
-    clean_jobs = filter_duplicate_jobs(normalized_jobs, duplicates)
-
-    save_jobs(clean_jobs)
-    save_duplicates(duplicates)
-
-    print(f"{len(clean_jobs)} offres sauvegardees dans {OUTPUT_FILE.name}")
-    print(f"{len(duplicates)} doublons detectes dans {DUPLICATES_FILE.name}")
+    print(f"{len(jobs)} offres normalisees recuperees")
+    print("Utilise DATA/ingest_welovedevs_to_prisma.mjs pour inserer directement en base Prisma.")
 
 
 if __name__ == "__main__":
