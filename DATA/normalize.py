@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 
 
+SOURCE_NAME = "welovedevs"
+
 CONTRACT_TYPE_MAPPING = {
     "cdi": "CDI",
     "permanent": "CDI",
@@ -66,22 +68,23 @@ def normalize_job(raw):
         or ""
     )
 
-    tags = []
+    stack = []
     for skill in raw.get("skillsList", []):
         name = skill.get("name")
         if name:
-            tags.append(name)
+            stack.append(name)
 
     return {
         "sourceId": str(raw.get("id") or "").strip(),
+        "source": SOURCE_NAME,
         "title": (raw.get("title") or "").strip(),
-        "company": (raw.get("smallCompany") or {}).get("companyName") or "",
+        "companyName": (raw.get("smallCompany") or {}).get("companyName") or "Entreprise inconnue",
         "location": first_value(raw.get("formattedPlaces") or []),
         "contractType": normalize_contract_type(first_value(raw.get("contractTypes") or [])),
         "description": description,
         "salaryMin": euros_from_thousands(salary.get("min")),
         "salaryMax": euros_from_thousands(salary.get("max")),
-        "tags": tags,
+        "stack": stack,
         "publishedAt": format_publish_date(raw.get("publishDate")),
         "remote": remote_policy.get("frequency"),
         "isActive": True,
