@@ -1,0 +1,113 @@
+[
+    {
+        "sourceId": "-NOsdk1DFMfRtXznXGJ6",
+        "title": "Développeur Java / Spring",
+        "company": "Jetdev",
+        "location": "Villeneuve-d'Ascq, France",
+        "contractType": "CDI",
+        "description": "“Jetdev c’est tout ce que vous m’aviez vendu”, “La co-construction et le bien-être des collabs ce n’est pas du bullshit”, “On est une famille”, “Quand on est Jetdev et qu’on arrive chez un client, on a l’impression d’être un super-héros” … Et ce n’est qu’une infime partie des retours des JetDevelopers ! Beaucoup d’ESN vont vous vendre “une boite à taille humaine” qui met “le collaborateur au coeur",
+        "salaryMin": 36000,
+        "salaryMax": 55000,
+        "tags": [
+            "Spring",
+            "Spring Boot",
+            "Java",
+            "PostgreSQL",
+            "MongoDB",
+            "Google Cloud",
+            "Git"
+        ],
+        "publishedAt": "2026-04-30T08:24:12.918000+00:00",
+        "remote": "hybrid",
+        "isActive": true
+    },
+    {
+        "sourceId": "-NzXrt3saSop7HS6YEKK",
+        "title": "Senior Back-End Developer",
+        "company": "Sensefuel",
+        "location": "Villeneuve-d'Ascq, France",
+        "contractType": "CDI",
+        "description": "Sensefuel\nFondée en 2017 par Christophe et Stéphane, Sensefuel développe une plateforme SaaS de recherche e-commerce et de découverte produits fondée sur une puissante technologie de Deep Learning.\nAvec plus de 100 clients en France et en Europe, Sensefuel offre ses services à de multiples acteurs de l’e-commerce. La solution permet à nos clients d’optimiser leur performance en améliorant les taux",
+        "salaryMin": 45000,
+        "salaryMax": 60000,
+        "tags": [
+            "Javascript",
+            "NodeJS",
+            "Docker"
+        ],
+        "publishedAt": "2026-04-21T10:23:06.369000+00:00",
+        "remote": "hybrid",
+        "isActive": true
+    },
+    {
+        "sourceId": "-OqFJrDZPHptW8W0SBwO",
+        "title": "Ingénieur .net / SQL confirmé(e) - Lead - H/F",
+        "company": "Synapse Informatique",
+        "location": "Marseille, France",
+        "contractType": "CDI",
+        "description": "Pour renforcer nos équipes, nous recherchons un(e) ingénieur .net / SQL pour notre site de Marseille.\nAu sein d’une petite équipe agile, animée par un chef de projet et en relation avec le PO, vous avez comme principales missions :\n•\tassurer le lead technique de l’équipe,\n•\tanalyser le besoin métier communiqué par le client pour définir la meilleure stratégie de réalisation,\n•\técrire le code corre",
+        "salaryMin": 45000,
+        "salaryMax": 55000,
+        "tags": [
+            ".NET core",
+            "WPF",
+            "Microsoft SQL Server",
+            "Android",
+            "Agile",
+            "C#",
+            "SCRUM"
+        ],
+        "publishedAt": "2026-04-15T09:06:25.212000+00:00",
+        "remote": "hybrid",
+        "isActive": true
+    },
+    {
+        "sourceId": "-Nu9kMsCy_zqJqv4CPpr",
+        "title": "Développeur.se  Full stack Java",
+        "company": "UBIK Ingénierie",
+        "location": "Roubaix, France",
+        "contractType": "CDI",
+        "description": "Concepteur-développeur confirmé, vous disposez d'au moins 2 ans d'expériences en développement en Java.\nNous recherchons des développeurs passionnés qui se démarquent par leur culture technologique, leur esprit d’équipe et leur pragmatisme.\nNous offrons un environnement bienveillant où le partage est une valeur clé tant entre nous qu'envers la communauté open source.\nAu sein d'une équipe, vos miss",
+        "salaryMin": 32000,
+        "salaryMax": 50000,
+        "tags": [
+            "Java",
+            "Spring",
+            "Angular",
+            "vueJS",
+            "React",
+            "Javascript",
+            "PostgreSQL",
+            "Docker",
+            "NodeJS",
+            "Git",
+            "Kubernetes"
+        ],
+        "publishedAt": "2026-04-14T12:31:31.329000+00:00",
+        "remote": "hybrid",
+        "isActive": true
+    },
+    {
+        "sourceId": "hiresweet+T6VOGG4G26NE",
+        "title": "Principal Software Engineer Python en startup - Full remote 75/90K",
+        "company": "Le Cab by WeLoveDevs",
+        "location": "France",
+        "contractType": "CDI",
+        "description": "Description🚀 **Rejoins Mergify en tant que Principal Software Engineer expert Python**  \n  \n**Rémunération brute annuelle : 75k€ à 90k€ en full remote  \nStatut cadre au forfait  \n  \nAvantages : Flexibilité horaire, Full Remote, Tickets Restaurants, BSPCE**  \n  \n  \n🏗️ **L'entreprise : un produit par les techs pour les techs  \n  \nMergify** révolutionne la manière dont les ingénieurs logiciels gère",
+        "salaryMin": 75000,
+        "salaryMax": 90000,
+        "tags": [
+            "Python",
+            "Typescript",
+            "Bootstrap",
+            "Docker",
+            "Github",
+            "PostgreSQL",
+            "React",
+            "Redis"
+        ],
+        "publishedAt": "2026-04-13T08:24:14.530000+00:00",
+        "remote": "fullTime",
+        "isActive": true
+    }
+]
