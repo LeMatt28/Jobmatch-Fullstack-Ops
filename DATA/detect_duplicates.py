@@ -3,10 +3,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 def build_job_text(job):
-    tags = job.get("tags") or job.get("skills") or []
+    tags = job.get("stack") or job.get("tags") or job.get("skills") or []
     parts = [
         job.get("title", ""),
-        job.get("company", ""),
+        job.get("companyName", "") or job.get("company", ""),
         job.get("description", ""),
         " ".join(tags),
     ]
