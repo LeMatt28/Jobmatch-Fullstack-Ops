@@ -3,19 +3,14 @@ import { Router, Request, Response } from "express";
 import { prisma } from "../../lib/prisma";
 import { verifyToken } from "../../middlewares/AuthMidlleware";
 import { z } from "zod";
-import {
-  validateIdParam,
-  generalLimiter,
-} from "../../middlewares/SecurityMiddleware";
+import { validateIdParam, generalLimiter } from "../../middlewares/SecurityMiddleware";
 
 const router = Router();
 
 // ============ VALIDATION SCHÉMAS ============
 // Schéma pour valider la direction du swipe - Protection injection SQL/XSS
 const swipeSchema = z.object({
-  direction: z.enum(["LIKE", "DISLIKE"], {
-    errorMap: () => ({ message: "Direction doit être LIKE ou DISLIKE" }),
-  }),
+  direction: z.enum(["LIKE", "DISLIKE"]),
 });
 
 // ============ SWIPE ENDPOINT ============
@@ -117,15 +112,7 @@ router.post(
         protection: "Generic error response",
       });
     }
-    // else like = match
-    const match = await prisma.match.create({
-      data: { candidateId, offerId },
-    });
-
-    return res.status(200).json({ matched: true, matchId: match.id });
-  } catch (err) {
-    return res.status(500).json({ error: "Erreur serveur" });
   }
-});
+);
 
 export default router;

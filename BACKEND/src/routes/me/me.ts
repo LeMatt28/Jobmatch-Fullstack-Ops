@@ -2,21 +2,14 @@ import { Router, Request, Response } from "express";
 import { prisma } from "../../lib/prisma";
 import { verifyToken } from "../../middlewares/AuthMidlleware";
 import { z } from "zod";
-import {
-  generalLimiter,
-  sanitizeString,
-} from "../../middlewares/SecurityMiddleware";
+import { generalLimiter, sanitizeString } from "../../middlewares/SecurityMiddleware";
 
 const router = Router();
 
 // ============ VALIDATION SCHÉMAS ============
 // Schéma pour mettre à jour le profil candidat - Protection injection SQL/XSS
 const updateCandidateSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Minimum 2 caractères")
-    .max(100, "Nom trop long")
-    .optional(),
+  name: z.string().min(2, "Minimum 2 caractères").max(100, "Nom trop long").optional(),
   location: z
     .string()
     .min(2, "Minimum 2 caractères")
@@ -31,16 +24,8 @@ const updateCandidateSchema = z.object({
 });
 
 const updateCompanySchema = z.object({
-  name: z
-    .string()
-    .min(2, "Minimum 2 caractères")
-    .max(255, "Nom trop long")
-    .optional(),
-  sector: z
-    .string()
-    .min(2, "Minimum 2 caractères")
-    .max(100, "Secteur trop long")
-    .optional(),
+  name: z.string().min(2, "Minimum 2 caractères").max(255, "Nom trop long").optional(),
+  sector: z.string().min(2, "Minimum 2 caractères").max(100, "Secteur trop long").optional(),
   size: z.string().max(50, "Taille trop longue").optional(),
   description: z
     .string()
@@ -158,10 +143,7 @@ router.put("/me", generalLimiter, verifyToken, async (req: Request, res: Respons
       const updateData = Object.fromEntries(
         Object.entries(result.data)
           .filter(([_, value]) => value !== undefined)
-          .map(([key, value]) => [
-            key,
-            typeof value === "string" ? sanitizeString(value) : value,
-          ]),
+          .map(([key, value]) => [key, typeof value === "string" ? sanitizeString(value) : value])
       );
 
       // Mettre à jour seulement le candidat connecté
@@ -206,10 +188,7 @@ router.put("/me", generalLimiter, verifyToken, async (req: Request, res: Respons
       const updateData = Object.fromEntries(
         Object.entries(result.data)
           .filter(([_, value]) => value !== undefined)
-          .map(([key, value]) => [
-            key,
-            typeof value === "string" ? sanitizeString(value) : value,
-          ]),
+          .map(([key, value]) => [key, typeof value === "string" ? sanitizeString(value) : value])
       );
 
       // Mettre à jour seulement l'entreprise connectée

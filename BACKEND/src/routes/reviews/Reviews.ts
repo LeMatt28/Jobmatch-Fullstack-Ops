@@ -86,8 +86,7 @@ router.post(
       if (!hasInteraction) {
         return res.status(403).json({
           error: "Vous n'avez pas d'interaction avec ce candidat",
-          protection:
-            "IDOR prevention - Review can only be left on matched candidates",
+          protection: "IDOR prevention - Review can only be left on matched candidates",
         });
       }
 
@@ -105,8 +104,7 @@ router.post(
 
       return res.status(201).json({
         ...review,
-        protection:
-          "IDOR prevention (interaction check) + Input validation + XSS sanitization",
+        protection: "IDOR prevention (interaction check) + Input validation + XSS sanitization",
       });
     } catch (err) {
       return res.status(500).json({
@@ -114,7 +112,7 @@ router.post(
         protection: "Generic error response",
       });
     }
-  },
+  }
 );
 
 // ============ POST REVIEW ENTREPRISE (par candidat) ============
@@ -177,8 +175,7 @@ router.post(
       if (!hasInteraction) {
         return res.status(403).json({
           error: "Vous n'avez pas d'interaction avec cette entreprise",
-          protection:
-            "IDOR prevention - Review can only be left on matched companies",
+          protection: "IDOR prevention - Review can only be left on matched companies",
         });
       }
 
@@ -196,8 +193,7 @@ router.post(
 
       return res.status(201).json({
         ...review,
-        protection:
-          "IDOR prevention (interaction check) + Input validation + XSS sanitization",
+        protection: "IDOR prevention (interaction check) + Input validation + XSS sanitization",
       });
     } catch (err) {
       return res.status(500).json({
@@ -205,7 +201,7 @@ router.post(
         protection: "Generic error response",
       });
     }
-  },
+  }
 );
 
 export default router;

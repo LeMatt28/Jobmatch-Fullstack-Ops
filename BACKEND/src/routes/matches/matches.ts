@@ -2,10 +2,7 @@
 import { Router, Request, Response } from "express";
 import { prisma } from "../../lib/prisma";
 import { verifyToken } from "../../middlewares/AuthMidlleware";
-import {
-  validateOfferIdParam,
-  generalLimiter,
-} from "../../middlewares/SecurityMiddleware";
+import { validateOfferIdParam, generalLimiter } from "../../middlewares/SecurityMiddleware";
 
 const router = Router();
 
@@ -42,8 +39,7 @@ router.get("/me/matches", generalLimiter, verifyToken, async (req: Request, res:
 
     return res.status(200).json({
       matches,
-      protection:
-        "IDOR prevention (candidateId from token) + Role-based access control",
+      protection: "IDOR prevention (candidateId from token) + Role-based access control",
     });
   } catch (err) {
     return res.status(500).json({
@@ -111,13 +107,11 @@ router.get(
             },
           },
         },
-      },
-    });
+      });
 
       return res.status(200).json({
         matches,
-        protection:
-          "IDOR prevention (offer ownership check) + Role-based access control",
+        protection: "IDOR prevention (offer ownership check) + Role-based access control",
       });
     } catch (err) {
       return res.status(500).json({
@@ -125,7 +119,7 @@ router.get(
         protection: "Generic error response",
       });
     }
-  },
+  }
 );
 
 export default router;

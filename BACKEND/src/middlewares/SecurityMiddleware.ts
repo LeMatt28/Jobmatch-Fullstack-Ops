@@ -9,8 +9,7 @@ export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Maximum 5 tentatives
   message: {
-    error:
-      "Trop de tentatives de connexion. Veuillez réessayer dans 15 minutes.",
+    error: "Trop de tentatives de connexion. Veuillez réessayer dans 15 minutes.",
   },
   standardHeaders: false, // Désactiver X-RateLimit dans les headers
   legacyHeaders: false,
@@ -53,21 +52,15 @@ export const idParamSchema = z.object({
 });
 
 export const offerIdParamSchema = z.object({
-  offerId: z
-    .string()
-    .refine((val) => !isNaN(parseInt(val)) && parseInt(val) > 0, {
-      message: "L'offerId doit être un nombre positif valide. Protection IDOR.",
-    }),
+  offerId: z.string().refine((val) => !isNaN(parseInt(val)) && parseInt(val) > 0, {
+    message: "L'offerId doit être un nombre positif valide. Protection IDOR.",
+  }),
 });
 
 // ============ MIDDLEWARE DE VALIDATION D'ID ============
 // Middleware pour valider automatiquement les paramètres ID
 // Protège contre les IDOR en vérifiant que les IDs sont valides
-export const validateIdParam = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const validateIdParam = (req: Request, res: Response, next: NextFunction) => {
   const result = idParamSchema.safeParse({ id: req.params.id });
   if (!result.success) {
     return res.status(400).json({
@@ -79,11 +72,7 @@ export const validateIdParam = (
   next();
 };
 
-export const validateOfferIdParam = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const validateOfferIdParam = (req: Request, res: Response, next: NextFunction) => {
   const result = offerIdParamSchema.safeParse({
     offerId: req.params.offerId,
   });
@@ -99,11 +88,7 @@ export const validateOfferIdParam = (
 
 // ============ PROTECTION CONTRE CSRF ============
 // Middleware pour vérifier les requêtes mutantes
-export const csrfProtection = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const csrfProtection = (req: Request, res: Response, next: NextFunction) => {
   // Vérifier que les requêtes de mutation ont un Content-Type approprié
   // Protège contre les attaques CSRF simples
   if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
@@ -117,8 +102,7 @@ export const csrfProtection = (
     ) {
       return res.status(415).json({
         error: "Content-Type invalide",
-        protection:
-          "CSRF protection - Content-Type doit être application/json",
+        protection: "CSRF protection - Content-Type doit être application/json",
       });
     }
   }
@@ -144,11 +128,7 @@ export const sanitizeString = (input: string): string => {
 };
 
 // Middleware pour sanitizer les inputs du body
-export const sanitizeRequestBody = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const sanitizeRequestBody = (req: Request, res: Response, next: NextFunction) => {
   if (
     req.body &&
     typeof req.body === "object" &&
@@ -167,11 +147,7 @@ export const sanitizeRequestBody = (
 
 // ============ MIDDLEWARE DE TIMEOUT ============
 // Protège contre les attaques de déni de service lent (Slowloris)
-export const requestTimeout = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const requestTimeout = (req: Request, res: Response, next: NextFunction) => {
   req.setTimeout(30000); // 30 secondes de timeout
   res.setTimeout(30000);
   next();

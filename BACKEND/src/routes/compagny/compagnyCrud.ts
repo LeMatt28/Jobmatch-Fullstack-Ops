@@ -13,29 +13,15 @@ const router = Router();
 // ============ VALIDATION SCHÉMAS ============
 // Schéma pour mettre à jour le profil entreprise - Protection injection SQL/XSS
 const updateCompanySchema = z.object({
-  name: z
-    .string()
-    .min(2, "Minimum 2 caractères")
-    .max(255, "Nom trop long")
-    .optional(),
-  sector: z
-    .string()
-    .min(2, "Minimum 2 caractères")
-    .max(100, "Secteur trop long")
-    .optional(),
-  size: z
-    .string()
-    .max(50, "Taille trop longue")
-    .optional(),
+  name: z.string().min(2, "Minimum 2 caractères").max(255, "Nom trop long").optional(),
+  sector: z.string().min(2, "Minimum 2 caractères").max(100, "Secteur trop long").optional(),
+  size: z.string().max(50, "Taille trop longue").optional(),
   description: z
     .string()
     .min(10, "Minimum 10 caractères")
     .max(5000, "Description trop longue")
     .optional(),
-  values: z
-    .string()
-    .max(1000, "Valeurs trop longues")
-    .optional(),
+  values: z.string().max(1000, "Valeurs trop longues").optional(),
 });
 
 // ============ GET /company/me — PROFIL ENTREPRISE CONNECTÉE ============
@@ -121,10 +107,7 @@ router.put("/company/me", generalLimiter, verifyToken, async (req: Request, res:
     const updateData = Object.fromEntries(
       Object.entries(result.data)
         .filter(([_, value]) => value !== undefined) // Ne pas mettre à jour les champs undefined
-        .map(([key, value]) => [
-          key,
-          typeof value === "string" ? sanitizeString(value) : value,
-        ]),
+        .map(([key, value]) => [key, typeof value === "string" ? sanitizeString(value) : value])
     );
 
     // ============ MISE À JOUR ============
@@ -200,7 +183,7 @@ router.get(
         protection: "Generic error response",
       });
     }
-  },
+  }
 );
 
 export default router;

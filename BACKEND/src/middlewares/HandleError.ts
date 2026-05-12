@@ -4,12 +4,7 @@ import { Request, Response, NextFunction } from "express";
 // ============ MIDDLEWARE DE GESTION D'ERREURS ============
 // Middleware pour capturer et traiter les erreurs de manière sécurisée
 // Protection: ne pas révéler les détails techniques en production
-export const errorHandle = (
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
+export const errorHandle = (err: Error, req: Request, res: Response, next: NextFunction): void => {
   // Log en interne l'erreur complète pour le debugging
   // Protège contre la fuite d'infos sensibles aux clients
   console.error("Erreur serveur:", err.message);

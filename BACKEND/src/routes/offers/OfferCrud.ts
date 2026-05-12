@@ -13,23 +13,11 @@ const router = Router();
 // ============ VALIDATION SCHÉMAS ============
 // Schéma pour créer une offre - Protection injection SQL/XSS
 const createOfferSchema = z.object({
-  title: z
-    .string()
-    .min(3, "Minimum 3 caractères")
-    .max(200, "Titre trop long"),
-  description: z
-    .string()
-    .min(10, "Minimum 10 caractères")
-    .max(5000, "Description trop longue"),
+  title: z.string().min(3, "Minimum 3 caractères").max(200, "Titre trop long"),
+  description: z.string().min(10, "Minimum 10 caractères").max(5000, "Description trop longue"),
   stack: z.array(z.string()).min(1, "Au moins une technologie requise"),
   location: z.string().min(2, "Localisation invalide").max(100),
-  contractType: z.enum([
-    "CDI",
-    "CDD",
-    "STAGE",
-    "FREELANCE",
-    "ALTERNANCE",
-  ]),
+  contractType: z.enum(["CDI", "CDD", "STAGE", "FREELANCE", "ALTERNANCE"]),
   salaryMin: z.number().positive("Salaire min positif").optional(),
   salaryMax: z.number().positive("Salaire max positif").optional(),
   remote: z.string().max(100, "Remote trop long").optional(),
@@ -63,16 +51,8 @@ router.post("/offers", generalLimiter, verifyToken, async (req: Request, res: Re
       });
     }
 
-    const {
-      title,
-      description,
-      stack,
-      location,
-      contractType,
-      salaryMin,
-      salaryMax,
-      remote,
-    } = result.data;
+    const { title, description, stack, location, contractType, salaryMin, salaryMax, remote } =
+      result.data;
 
     // ============ CRÉATION DE L'OFFRE ============
     // Créer l'offre liée à l'entreprise connectée (protection IDOR via l'ID authentifié)
@@ -92,8 +72,7 @@ router.post("/offers", generalLimiter, verifyToken, async (req: Request, res: Re
 
     return res.status(201).json({
       ...offer,
-      protection:
-        "IDOR prevention (companyId from token) + Input validation + XSS sanitization",
+      protection: "IDOR prevention (companyId from token) + Input validation + XSS sanitization",
     });
   } catch (err) {
     return res.status(500).json({
@@ -209,7 +188,7 @@ router.get(
         protection: "Generic error response",
       });
     }
-  },
+  }
 );
 
 // ============ UPDATE OFFER ============
@@ -267,7 +246,7 @@ router.put(
         Object.entries(result.data).map(([key, value]) => [
           key,
           typeof value === "string" ? sanitizeString(value) : value,
-        ]),
+        ])
       );
 
       const updated = await prisma.offer.update({
@@ -285,7 +264,7 @@ router.put(
         protection: "Generic error response",
       });
     }
-  },
+  }
 );
 
 // ============ TOGGLE OFFER STATUS ============
@@ -333,8 +312,7 @@ router.patch(
 
       return res.status(200).json({
         isActive: updated.isActive,
-        protection:
-          "IDOR prevention (ownership check) + Database parameterized query",
+        protection: "IDOR prevention (ownership check) + Database parameterized query",
       });
     } catch (err) {
       return res.status(500).json({
@@ -342,7 +320,7 @@ router.patch(
         protection: "Generic error response",
       });
     }
-  },
+  }
 );
 
 // ============ DELETE OFFER ============
@@ -391,35 +369,7 @@ router.delete(
         protection: "Generic error response",
       });
     }
-
-    const updated = await prisma.offer.update({
-      where: { id },
-      data: { isActive: !offer.isActive },
-    });
-
-    return res.status(200).json({ isActive: updated.isActive });
-  } catch (err) {
-    return res.status(500).json({ error: "Erreur serveur" });
   }
-});
-
-router.delete("/offers/:id", verifyToken, async (req: Request, res: Response) => {
-  try {
-    const role = req.user!.role;
-    if (role !== "company") {
-      return res.status(403).json({ error: "Réservé aux entreprises" });
-    }
-    const id = parseInt(req.params.id as string);
-    const offer = await prisma.offer.findUnique({ where: { id } });
-    if (!offer) return res.status(404).json({ error: "Offre introuvable" });
-    if (offer.companyId !== req.user!.id) {
-      return res.status(403).json({ error: "Pas votre offre" });
-    }
-    await prisma.offer.delete({ where: { id } });
-    return res.status(204).send();
-  } catch (err) {
-    return res.status(500).json({ error: "Erreur serveur" });
-  }
-});
+);
 
 export default router;
