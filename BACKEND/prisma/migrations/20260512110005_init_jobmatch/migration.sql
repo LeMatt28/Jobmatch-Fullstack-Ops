@@ -1,7 +1,4 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('CANDIDATE', 'COMPAGNY', 'ADMIN');
-
--- CreateEnum
 CREATE TYPE "ContractType" AS ENUM ('CDI', 'CDD', 'STAGE', 'ALTERNANCE', 'FREELANCE');
 
 -- CreateEnum
