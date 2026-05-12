@@ -11,7 +11,6 @@ app.use("/auth", registerCandidate);
 app.use("/auth", login);
 app.use(errorHandle);
 
-
 describe("POST /auth/register/candidate", () => {
   it("should return 400 if email is invalid", async () => {
     const res = await request(app)
@@ -27,8 +26,6 @@ describe("POST /auth/register/candidate", () => {
     expect(res.status).toBe(400);
   });
 });
-
-
 
 describe("POST /auth/login", () => {
   it("should return 400 if email is invalid", async () => {

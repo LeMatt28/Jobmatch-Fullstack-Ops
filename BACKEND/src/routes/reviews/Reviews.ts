@@ -18,7 +18,6 @@ router.post("/reviews/candidate/:id", verifyToken, async (req: Request, res: Res
     const candidateId = parseInt(req.params.id as string);
     const { score, comment } = req.body;
 
-    
     // verif si la review = okkkk
     if (!score || score < 1 || score > 5) {
       return res.status(400).json({ error: "Score entre 1 et 5 requis" });
@@ -35,12 +34,9 @@ router.post("/reviews/candidate/:id", verifyToken, async (req: Request, res: Res
   }
 });
 
-
-
 // post candidat vers entreprise
 router.post("/reviews/company/:id", verifyToken, async (req: Request, res: Response) => {
   try {
-
     // verif si bien candidat
     const role = req.user!.role;
     if (role !== "candidate") {

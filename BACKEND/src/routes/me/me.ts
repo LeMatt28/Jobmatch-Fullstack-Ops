@@ -29,8 +29,7 @@ router.get("/me", verifyToken, async (req: Request, res: Response) => {
           createdAt: true,
         },
       });
-      if (!candidate)
-        return res.status(404).json({ error: "Candidat introuvable" });
+      if (!candidate) return res.status(404).json({ error: "Candidat introuvable" });
       return res.status(200).json({ ...candidate, role: "candidate" });
     }
 
@@ -50,8 +49,7 @@ router.get("/me", verifyToken, async (req: Request, res: Response) => {
           createdAt: true,
         },
       });
-      if (!company)
-        return res.status(404).json({ error: "Entreprise introuvable" });
+      if (!company) return res.status(404).json({ error: "Entreprise introuvable" });
       return res.status(200).json({ ...company, role: "company" });
     }
 
@@ -138,7 +136,6 @@ router.put("/me", verifyToken, async (req: Request, res: Response) => {
 });
 
 export default router;
-
 
 // gety mes stats
 router.get("/me/stats", verifyToken, async (req: Request, res: Response) => {

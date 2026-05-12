@@ -138,56 +138,48 @@ router.put("/offers/:id", verifyToken, async (req: Request, res: Response) => {
   }
 });
 
-router.patch(
-  "/offers/:id/toggle",
-  verifyToken,
-  async (req: Request, res: Response) => {
-    try {
-      const role = req.user!.role;
-      if (role !== "company") {
-        return res.status(403).json({ error: "Réservé aux entreprises" });
-      }
-      const id = parseInt(req.params.id as string);
-
-      const offer = await prisma.offer.findUnique({ where: { id } });
-      if (!offer) return res.status(404).json({ error: "Offre introuvable" });
-      if (offer.companyId !== req.user!.id) {
-        return res.status(403).json({ error: "Pas votre offre" });
-      }
-
-      const updated = await prisma.offer.update({
-        where: { id },
-        data: { isActive: !offer.isActive },
-      });
-
-      return res.status(200).json({ isActive: updated.isActive });
-    } catch (err) {
-      return res.status(500).json({ error: "Erreur serveur" });
+router.patch("/offers/:id/toggle", verifyToken, async (req: Request, res: Response) => {
+  try {
+    const role = req.user!.role;
+    if (role !== "company") {
+      return res.status(403).json({ error: "Réservé aux entreprises" });
     }
-  },
-);
+    const id = parseInt(req.params.id as string);
 
-router.delete(
-  "/offers/:id",
-  verifyToken,
-  async (req: Request, res: Response) => {
-    try {
-      const role = req.user!.role;
-      if (role !== "company") {
-        return res.status(403).json({ error: "Réservé aux entreprises" });
-      }
-      const id = parseInt(req.params.id as string);
-      const offer = await prisma.offer.findUnique({ where: { id } });
-      if (!offer) return res.status(404).json({ error: "Offre introuvable" });
-      if (offer.companyId !== req.user!.id) {
-        return res.status(403).json({ error: "Pas votre offre" });
-      }
-      await prisma.offer.delete({ where: { id } });
-      return res.status(204).send();
-    } catch (err) {
-      return res.status(500).json({ error: "Erreur serveur" });
+    const offer = await prisma.offer.findUnique({ where: { id } });
+    if (!offer) return res.status(404).json({ error: "Offre introuvable" });
+    if (offer.companyId !== req.user!.id) {
+      return res.status(403).json({ error: "Pas votre offre" });
     }
-  },
-);
+
+    const updated = await prisma.offer.update({
+      where: { id },
+      data: { isActive: !offer.isActive },
+    });
+
+    return res.status(200).json({ isActive: updated.isActive });
+  } catch (err) {
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+router.delete("/offers/:id", verifyToken, async (req: Request, res: Response) => {
+  try {
+    const role = req.user!.role;
+    if (role !== "company") {
+      return res.status(403).json({ error: "Réservé aux entreprises" });
+    }
+    const id = parseInt(req.params.id as string);
+    const offer = await prisma.offer.findUnique({ where: { id } });
+    if (!offer) return res.status(404).json({ error: "Offre introuvable" });
+    if (offer.companyId !== req.user!.id) {
+      return res.status(403).json({ error: "Pas votre offre" });
+    }
+    await prisma.offer.delete({ where: { id } });
+    return res.status(204).send();
+  } catch (err) {
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
 
 export default router;

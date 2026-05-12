@@ -27,8 +27,7 @@ router.get("/company/me", verifyToken, async (req: Request, res: Response) => {
         createdAt: true,
       },
     });
-    if (!company)
-      return res.status(404).json({ error: "Entreprise introuvable" });
+    if (!company) return res.status(404).json({ error: "Entreprise introuvable" });
     return res.status(200).json(company);
   } catch (err) {
     return res.status(500).json({ error: "Erreur serveur" });
@@ -88,8 +87,7 @@ router.get("/company/:id", async (req: Request, res: Response) => {
         scoreReliability: true,
       },
     });
-    if (!company)
-      return res.status(404).json({ error: "Entreprise introuvable" });
+    if (!company) return res.status(404).json({ error: "Entreprise introuvable" });
     return res.status(200).json(company);
   } catch (err) {
     return res.status(500).json({ error: "Erreur serveur" });
