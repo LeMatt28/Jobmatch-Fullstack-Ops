@@ -26,3 +26,7 @@ jobs:
       - name: Vérifier le format Prettier
         working-directory: ./BACKEND
         run: npm run format:check
+      
+      - name: Lancer les tests Jest
+        working-directory: ./BACKEND
+        run: npm test
