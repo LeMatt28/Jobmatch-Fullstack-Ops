@@ -4,11 +4,7 @@ import JWT from "jsonwebtoken";
 import { JwtPayload } from "../types/JWTPayload";
 
 // middleware token
-export const verifyToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const AuthHeaders = req.headers.authorization;
 
   if (!AuthHeaders) return res.status(401).json({ message: "Token manquant" });

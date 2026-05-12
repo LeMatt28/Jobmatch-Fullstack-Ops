@@ -24,7 +24,7 @@ router.get("/admin/users", verifyToken, VerifyAdmin, async (req: Request, res: R
 router.delete("/admin/users/:id", verifyToken, VerifyAdmin, async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id as string);
-    const { type } = req.query; 
+    const { type } = req.query;
 
     if (type === "candidate") {
       await prisma.candidate.delete({ where: { id } });
