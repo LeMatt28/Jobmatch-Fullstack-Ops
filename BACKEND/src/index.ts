@@ -20,6 +20,7 @@ import swipe from "./routes/offers/swipe";
 import matches from "./routes/matches/matches";
 import company from "./routes/compagny/compagnyCrud";
 import reviews from "./routes/reviews/Reviews";
+import admin from "./routes/admin/admin";
 
 // env
 dotenv.config();
@@ -84,6 +85,7 @@ app.use("/", swipe);
 app.use("/", matches);
 app.use("/", company);
 app.use("/", reviews);
+app.use("/", admin);
 
 // ============ MIDDLEWARE GESTION DES ERREURS ============
 // Gérer les erreurs de manière sécurisée

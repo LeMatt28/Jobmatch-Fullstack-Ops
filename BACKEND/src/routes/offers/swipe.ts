@@ -117,7 +117,15 @@ router.post(
         protection: "Generic error response",
       });
     }
-  },
-);
+    // else like = match
+    const match = await prisma.match.create({
+      data: { candidateId, offerId },
+    });
+
+    return res.status(200).json({ matched: true, matchId: match.id });
+  } catch (err) {
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
 
 export default router;

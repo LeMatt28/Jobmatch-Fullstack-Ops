@@ -249,3 +249,29 @@ router.put("/me", generalLimiter, verifyToken, async (req: Request, res: Respons
 });
 
 export default router;
+
+// gety mes stats
+router.get("/me/stats", verifyToken, async (req: Request, res: Response) => {
+  try {
+    const role = req.user!.role;
+    if (role !== "candidate") {
+      return res.status(403).json({ error: "Réservé aux candidats" });
+    }
+    const candidateId = req.user!.id;
+
+    const [swipesCount, matchesCount, likesCount] = await Promise.all([
+      prisma.swipe.count({ where: { candidateId } }),
+      prisma.match.count({ where: { candidateId } }),
+      prisma.swipe.count({ where: { candidateId, direction: "LIKE" } }),
+    ]);
+
+    return res.status(200).json({
+      offersViewed: swipesCount,
+      likesGiven: likesCount,
+      matchesCount,
+      matchRate: likesCount > 0 ? Math.round((matchesCount / likesCount) * 100) : 0,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
