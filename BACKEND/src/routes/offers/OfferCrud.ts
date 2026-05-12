@@ -14,7 +14,10 @@ const router = Router();
 // Schéma pour créer une offre - Protection injection SQL/XSS
 const createOfferSchema = z.object({
   title: z.string().min(3, "Minimum 3 caractères").max(200, "Titre trop long"),
-  description: z.string().min(10, "Minimum 10 caractères").max(5000, "Description trop longue"),
+  description: z
+    .string()
+    .min(10, "Minimum 10 caractères")
+    .max(5000, "Description trop longue"),
   stack: z.array(z.string()).min(1, "Au moins une technologie requise"),
   location: z.string().min(2, "Localisation invalide").max(100),
   contractType: z.enum(["CDI", "CDD", "STAGE", "FREELANCE", "ALTERNANCE"]),
@@ -27,133 +30,158 @@ const updateOfferSchema = createOfferSchema.partial();
 
 // ============ CREATE OFFER ============
 // Créer une offre d'emploi - Protection contre l'accès non autorisé (authorisation check)
-router.post("/offers", generalLimiter, verifyToken, async (req: Request, res: Response) => {
-  try {
-    // ============ VÉRIFICATION RÔLE ============
-    // Vérifier que seules les entreprises peuvent créer des offres - Protection accès non autorisé
-    const role = req.user!.role;
-    if (role !== "company") {
-      return res.status(403).json({
-        error: "Réservé aux entreprises",
-        protection: "Role-based access control (RBAC) - Privilege escalation prevention",
-      });
-    }
-    const companyId = req.user!.id;
+router.post(
+  "/offers",
+  generalLimiter,
+  verifyToken,
+  async (req: Request, res: Response) => {
+    try {
+      // ============ VÉRIFICATION RÔLE ============
+      // Vérifier que seules les entreprises peuvent créer des offres - Protection accès non autorisé
+      const role = req.user!.role;
+      if (role !== "company") {
+        return res.status(403).json({
+          error: "Réservé aux entreprises",
+          protection:
+            "Role-based access control (RBAC) - Privilege escalation prevention",
+        });
+      }
+      const companyId = req.user!.id;
 
-    // ============ VALIDATION DES CHAMPS ============
-    // Valider les données - Protection injection SQL/XSS
-    const result = createOfferSchema.safeParse(req.body);
-    if (!result.success) {
-      return res.status(400).json({
-        error: "Données invalides",
-        details: result.error.flatten(),
-        protection: "Input validation - Zod schema validation",
-      });
-    }
+      // ============ VALIDATION DES CHAMPS ============
+      // Valider les données - Protection injection SQL/XSS
+      const result = createOfferSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({
+          error: "Données invalides",
+          details: result.error.flatten(),
+          protection: "Input validation - Zod schema validation",
+        });
+      }
 
-    const { title, description, stack, location, contractType, salaryMin, salaryMax, remote } =
-      result.data;
-
-    // ============ CRÉATION DE L'OFFRE ============
-    // Créer l'offre liée à l'entreprise connectée (protection IDOR via l'ID authentifié)
-    const offer = await prisma.offer.create({
-      data: {
-        companyId, // IDOR prevention: utiliser l'ID du token, pas du body
-        title: sanitizeString(title),
-        description: sanitizeString(description),
+      const {
+        title,
+        description,
         stack,
-        location: sanitizeString(location),
+        location,
         contractType,
         salaryMin,
         salaryMax,
-        remote: remote || null,
-      },
-    });
+        remote,
+      } = result.data;
 
-    return res.status(201).json({
-      ...offer,
-      protection: "IDOR prevention (companyId from token) + Input validation + XSS sanitization",
-    });
-  } catch (err) {
-    return res.status(500).json({
-      error: "Erreur serveur",
-      protection: "Generic error response",
-    });
-  }
-});
+      // ============ CRÉATION DE L'OFFRE ============
+      // Créer l'offre liée à l'entreprise connectée (protection IDOR via l'ID authentifié)
+      const offer = await prisma.offer.create({
+        data: {
+          companyId, // IDOR prevention: utiliser l'ID du token, pas du body
+          title: sanitizeString(title),
+          description: sanitizeString(description),
+          stack,
+          location: sanitizeString(location),
+          contractType,
+          salaryMin,
+          salaryMax,
+          remote: remote || null,
+        },
+      });
+
+      return res.status(201).json({
+        ...offer,
+        protection:
+          "IDOR prevention (companyId from token) + Input validation + XSS sanitization",
+      });
+    } catch (err) {
+      return res.status(500).json({
+        error: "Erreur serveur",
+        protection: "Generic error response",
+      });
+    }
+  },
+);
 
 // ============ GET OFFERS FEED ============
 // Obtenir les offres pour un candidat - Protection accès non autorisé + IDOR
-router.get("/offers/feed", generalLimiter, verifyToken, async (req: Request, res: Response) => {
-  try {
-    // ============ VÉRIFICATION RÔLE ============
-    // Vérifier que seuls les candidats peuvent accéder au feed - Protection accès non autorisé
-    const role = req.user!.role;
-    if (role !== "candidate") {
-      return res.status(403).json({
-        error: "Réservé aux candidats",
-        protection: "Role-based access control (RBAC)",
+router.get(
+  "/offers/feed",
+  generalLimiter,
+  verifyToken,
+  async (req: Request, res: Response) => {
+    try {
+      // ============ VÉRIFICATION RÔLE ============
+      // Vérifier que seuls les candidats peuvent accéder au feed - Protection accès non autorisé
+      const role = req.user!.role;
+      if (role !== "candidate") {
+        return res.status(403).json({
+          error: "Réservé aux candidats",
+          protection: "Role-based access control (RBAC)",
+        });
+      }
+      const candidateId = req.user!.id; // IDOR prevention: utiliser l'ID du token
+
+      const alreadySwiped = await prisma.swipe.findMany({
+        where: { candidateId }, // IDOR prevention: filtrer par candidateId authentifié
+        select: { offerId: true },
+      });
+
+      const swipedIds = alreadySwiped.map((s) => s.offerId);
+
+      const offers = await prisma.offer.findMany({
+        where: {
+          isActive: true,
+          id: { notIn: swipedIds },
+        },
+        include: {
+          company: { select: { id: true, name: true, scoreReliability: true } },
+        },
+        take: 10,
+      });
+
+      return res.status(200).json(offers);
+    } catch (err) {
+      return res.status(500).json({
+        error: "Erreur serveur",
+        protection: "Generic error response",
       });
     }
-    const candidateId = req.user!.id; // IDOR prevention: utiliser l'ID du token
-
-    const alreadySwiped = await prisma.swipe.findMany({
-      where: { candidateId }, // IDOR prevention: filtrer par candidateId authentifié
-      select: { offerId: true },
-    });
-
-    const swipedIds = alreadySwiped.map((s) => s.offerId);
-
-    const offers = await prisma.offer.findMany({
-      where: {
-        isActive: true,
-        id: { notIn: swipedIds },
-      },
-      include: {
-        company: { select: { id: true, name: true, scoreReliability: true } },
-      },
-      take: 10,
-    });
-
-    return res.status(200).json(offers);
-  } catch (err) {
-    return res.status(500).json({
-      error: "Erreur serveur",
-      protection: "Generic error response",
-    });
-  }
-});
+  },
+);
 
 // ============ GET MY OFFERS ============
 // Obtenir les offres de l'entreprise - Protection IDOR
-router.get("/offers/mine", generalLimiter, verifyToken, async (req: Request, res: Response) => {
-  try {
-    // ============ VÉRIFICATION RÔLE ============
-    // Vérifier que seules les entreprises peuvent voir leurs offres - Protection accès non autorisé
-    const role = req.user!.role;
-    if (role !== "company") {
-      return res.status(403).json({
-        error: "Réservé aux entreprises",
-        protection: "Role-based access control (RBAC)",
+router.get(
+  "/offers/mine",
+  generalLimiter,
+  verifyToken,
+  async (req: Request, res: Response) => {
+    try {
+      // ============ VÉRIFICATION RÔLE ============
+      // Vérifier que seules les entreprises peuvent voir leurs offres - Protection accès non autorisé
+      const role = req.user!.role;
+      if (role !== "company") {
+        return res.status(403).json({
+          error: "Réservé aux entreprises",
+          protection: "Role-based access control (RBAC)",
+        });
+      }
+      const companyId = req.user!.id; // IDOR prevention: utiliser l'ID du token
+
+      const offers = await prisma.offer.findMany({
+        where: { companyId }, // IDOR prevention: filtrer par companyId authentifié
+        include: {
+          _count: { select: { matches: true } },
+        },
+      });
+
+      return res.status(200).json(offers);
+    } catch (err) {
+      return res.status(500).json({
+        error: "Erreur serveur",
+        protection: "Generic error response",
       });
     }
-    const companyId = req.user!.id; // IDOR prevention: utiliser l'ID du token
-
-    const offers = await prisma.offer.findMany({
-      where: { companyId }, // IDOR prevention: filtrer par companyId authentifié
-      include: {
-        _count: { select: { matches: true } },
-      },
-    });
-
-    return res.status(200).json(offers);
-  } catch (err) {
-    return res.status(500).json({
-      error: "Erreur serveur",
-      protection: "Generic error response",
-    });
-  }
-});
+  },
+);
 
 // ============ GET SINGLE OFFER ============
 // Obtenir une offre spécifique - Protection IDOR par validation ID
@@ -178,7 +206,8 @@ router.get(
       if (!offer)
         return res.status(404).json({
           error: "Offre introuvable",
-          protection: "IDOR prevention - ID validation + Database parameterized query",
+          protection:
+            "IDOR prevention - ID validation + Database parameterized query",
         });
 
       return res.status(200).json(offer);
@@ -188,7 +217,7 @@ router.get(
         protection: "Generic error response",
       });
     }
-  }
+  },
 );
 
 // ============ UPDATE OFFER ============
@@ -246,7 +275,7 @@ router.put(
         Object.entries(result.data).map(([key, value]) => [
           key,
           typeof value === "string" ? sanitizeString(value) : value,
-        ])
+        ]),
       );
 
       const updated = await prisma.offer.update({
@@ -264,7 +293,7 @@ router.put(
         protection: "Generic error response",
       });
     }
-  }
+  },
 );
 
 // ============ TOGGLE OFFER STATUS ============
@@ -312,7 +341,8 @@ router.patch(
 
       return res.status(200).json({
         isActive: updated.isActive,
-        protection: "IDOR prevention (ownership check) + Database parameterized query",
+        protection:
+          "IDOR prevention (ownership check) + Database parameterized query",
       });
     } catch (err) {
       return res.status(500).json({
@@ -320,7 +350,7 @@ router.patch(
         protection: "Generic error response",
       });
     }
-  }
+  },
 );
 
 // ============ DELETE OFFER ============
@@ -369,7 +399,7 @@ router.delete(
         protection: "Generic error response",
       });
     }
-  }
+  },
 );
 
 export default router;

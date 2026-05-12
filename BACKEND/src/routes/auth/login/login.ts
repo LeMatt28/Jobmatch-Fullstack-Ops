@@ -4,7 +4,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "../../../lib/prisma";
 import { z } from "zod";
-import { authLimiter, sanitizeString } from "../../../middlewares/SecurityMiddleware";
+import {
+  authLimiter,
+  sanitizeString,
+} from "../../../middlewares/SecurityMiddleware";
 
 //router
 const router = Router();
@@ -16,7 +19,10 @@ const loginSchema = z.object({
     .string()
     .email("Email invalide")
     .transform((e) => e.toLowerCase()), // Normaliser l'email
-  password: z.string().min(1, "Mot de passe requis").max(255, "Mot de passe trop long"),
+  password: z
+    .string()
+    .min(1, "Mot de passe requis")
+    .max(255, "Mot de passe trop long"),
 });
 
 // ============ ENDPOINT LOGIN ============
@@ -51,7 +57,10 @@ router.post("/login", authLimiter, async (req: Request, res: Response) => {
     if (!user) {
       // Effectuer une vérification bcrypt fictive pour prendre du temps
       // (protection contre les attaques par énumération d'emails)
-      await bcrypt.compare(password, "$2a$10$fictive.hash.to.prevent.timing.attacks");
+      await bcrypt.compare(
+        password,
+        "$2a$10$fictive.hash.to.prevent.timing.attacks",
+      );
       return res.status(401).json({
         error: "Identifiants incorrects",
         protection:
@@ -75,7 +84,7 @@ router.post("/login", authLimiter, async (req: Request, res: Response) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, role },
       process.env.JWT_SECRET as string,
-      { expiresIn: "7d" } // Expiration courte pour limiter les dégâts en cas de vol
+      { expiresIn: "7d" }, // Expiration courte pour limiter les dégâts en cas de vol
     );
 
     // ============ RÉPONSE ============

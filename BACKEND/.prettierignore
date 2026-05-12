@@ -1,9 +1,0 @@
-node_modules
-dist
-build
-.next
-prisma
-migrations
-.env
-.env.local
-*.lock

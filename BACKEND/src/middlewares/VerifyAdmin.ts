@@ -6,7 +6,11 @@ import { JwtPayload } from "../types/JWTPayload";
 // Middleware pour vérifier que l'utilisateur a le rôle admin
 // Protège contre les accès non autorisés aux routes réservées à l'administration
 // Protection contre l'escalade de privilèges (Privilege Escalation)
-export const VerifyAdmin = (req: Request, res: Response, next: NextFunction): void => {
+export const VerifyAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
   const user = req.user as JwtPayload;
 
   // Vérifier que l'utilisateur est authentifié - Protection contre accès non autorisé

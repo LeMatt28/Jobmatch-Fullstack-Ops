@@ -3,7 +3,10 @@ import { Router, Request, Response } from "express";
 import { prisma } from "../../lib/prisma";
 import { verifyToken } from "../../middlewares/AuthMidlleware";
 import { z } from "zod";
-import { validateIdParam, generalLimiter } from "../../middlewares/SecurityMiddleware";
+import {
+  validateIdParam,
+  generalLimiter,
+} from "../../middlewares/SecurityMiddleware";
 
 const router = Router();
 
@@ -112,7 +115,7 @@ router.post(
         protection: "Generic error response",
       });
     }
-  }
+  },
 );
 
 export default router;

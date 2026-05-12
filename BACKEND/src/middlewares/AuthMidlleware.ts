@@ -6,7 +6,11 @@ import { JwtPayload } from "../types/JWTPayload";
 // ============ MIDDLEWARE D'AUTHENTIFICATION ============
 // Middleware pour vérifier le JWT token - protège contre les accès non autorisés
 // Vérifie que le token est présent, valide et n'a pas expiré
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+export const verifyToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const AuthHeaders = req.headers.authorization;
 
   // Vérifier que le header Authorization est présent - Protection contre l'accès non autorisé
@@ -21,7 +25,8 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
   if (parts.length !== 2 || parts[0] !== "Bearer") {
     return res.status(401).json({
       error: "Format Authorization invalide",
-      protection: "Token format must be 'Bearer <token>' - Protection contre accès non autorisé",
+      protection:
+        "Token format must be 'Bearer <token>' - Protection contre accès non autorisé",
     });
   }
 
@@ -46,7 +51,8 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     // Protection contre les attaques d'énumération
     res.status(401).json({
       error: "Token invalide ou expiré",
-      protection: "JWT signature invalid or expired - Protection contre usurpation",
+      protection:
+        "JWT signature invalid or expired - Protection contre usurpation",
     });
   }
 };
