@@ -11,17 +11,17 @@ app.use("/auth", registerCandidate);
 app.use("/auth", login);
 app.use(errorHandle);
 
-describe("POST /auth/register/candidate", () => {
+describe("POST /auth/register", () => {
   it("should return 400 if email is invalid", async () => {
     const res = await request(app)
-      .post("/auth/register/candidate")
+      .post("/auth/register")
       .send({ email: "pasunemail", password: "password123", name: "Lucas" });
     expect(res.status).toBe(400);
   });
 
   it("should return 400 if password is too short", async () => {
     const res = await request(app)
-      .post("/auth/register/candidate")
+      .post("/auth/register")
       .send({ email: "test@test.com", password: "123", name: "Lucas" });
     expect(res.status).toBe(400);
   });

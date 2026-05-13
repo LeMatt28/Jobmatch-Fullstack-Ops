@@ -87,6 +87,9 @@ model Offer {
   salaryMax    Int?
   remote       String?
   isActive     Boolean       @default(true)
+  sourceId     String?       @unique
+  source       String?
+  publishedAt  DateTime?
   swipes       Swipe[]
   matches      Match[]
   createdAt    DateTime      @default(now())

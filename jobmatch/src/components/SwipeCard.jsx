@@ -89,7 +89,7 @@ function OfferModal({ offer, onClose, onLike, onDislike }) {
                 <p className="font-semibold text-brand-900 text-sm">{offer.company.name}</p>
                 <p className="text-xs text-gray-400">{offer.company.sector} · {offer.company.employees} employés</p>
               </div>
-              <ScoreBadge score={offer.company.score} size="sm" />
+              <ScoreBadge score={offer.company.scoreReliability} size="sm" />
             </div>
           </section>
         </div>
@@ -185,7 +185,7 @@ export function SwipeCard({ offer, onSwipe, isTop, style }) {
           <div className="flex-1 min-w-0">
             <p className="text-brand-900 font-semibold text-sm truncate">{offer.company.name}</p>
             <div className="flex items-center gap-2 mt-0.5">
-              <ScoreBadge score={offer.company.score} size="sm" />
+              <ScoreBadge score={offer.company.scoreReliability} size="sm" />
             </div>
           </div>
         </div>
