@@ -12,7 +12,7 @@ const router = Router();
 // ============ GET CANDIDATE MATCHES ============
 // Obtenir les matches d'un candidat - Protection IDOR et accès non autorisé
 router.get(
-  "/me/matches",
+  "/matches",
   generalLimiter,
   verifyToken,
   async (req: Request, res: Response) => {

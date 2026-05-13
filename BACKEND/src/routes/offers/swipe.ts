@@ -19,7 +19,7 @@ const swipeSchema = z.object({
 // ============ SWIPE ENDPOINT ============
 // Endpoint pour swiper une offre - Protection IDOR et injection SQL
 router.post(
-  "/offers/:id/swipe",
+  "/swipe/:id",
   generalLimiter,
   verifyToken,
   validateIdParam, // Middleware pour valider que l'ID est un nombre positif

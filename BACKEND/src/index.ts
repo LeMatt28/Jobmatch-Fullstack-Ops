@@ -33,14 +33,16 @@ const port = process.env.PORT || 3001;
 
 // CORS - Contrôler les origines des requêtes
 // Protection contre les attaques CSRF et XSS cross-origin
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
+  credentials: true,
+}));
 
 // Parser JSON
 app.use(express.json());
 
 // Helmet - Headers de sécurité HTTP
-// Protection contre XSS, clickjacking, MIME sniffing, etc.
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false }));
 
 // ============ PROTECTIONS SUPPLÉMENTAIRES ============
 
@@ -69,21 +71,24 @@ app.get("/health", (_req, res) => {
 // ============ ROUTES AUTHENTIFICATION ============
 // Rate limiter sur les routes d'authentification
 // Protection brute force sur login (5 tentatives/15min)
-app.use("/auth", authLimiter);
-app.use("/auth", registerLimiter);
+app.use("/candidate", registerLimiter);
+app.use("/company", registerLimiter);
+app.use(authLimiter);
 
-app.use("/auth", registerCandidate);
-app.use("/auth", registerCompany);
-app.use("/auth", login);
+app.use("/candidate", registerCandidate); // POST /candidate/register
+app.use("/company",   registerCompany);   // POST /company/register
+app.use("/",          login);             // POST /login
 
 // ============ ROUTES PROTÉGÉES ============
-// Toutes les autres routes demandent un token JWT
+app.use("/candidate", me);      // GET|PUT /candidate/profile, GET /candidate/stats
+app.use("/candidate", swipe);   // POST /candidate/swipe/:id
+app.use("/candidate", matches); // GET /candidate/matches
+app.use("/candidate", offers);  // GET /candidate/feed
 
-app.use("/", me);
-app.use("/", offers);
-app.use("/", swipe);
-app.use("/", matches);
-app.use("/", company);
+app.use("/company", company);   // GET|PUT /company/profile, GET /company/:id
+app.use("/company", offers);    // GET|POST|PUT|DELETE /company/offers(/:id)
+app.use("/company", matches);   // GET /company/matches/:offerId
+
 app.use("/", reviews);
 app.use("/", admin);
 

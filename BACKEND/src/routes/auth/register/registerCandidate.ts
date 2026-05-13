@@ -39,7 +39,7 @@ const candidateSchema = z.object({
 // ============ ENDPOINT REGISTRATION CANDIDAT ============
 // Route d'inscription avec rate limiter et validation stricte
 router.post(
-  "/register/candidate",
+  "/register",
   registerLimiter,
   async (req: Request, res: Response) => {
     try {

@@ -58,7 +58,7 @@ const updateCompanySchema = z.object({
 // ============ GET /me — PROFIL CONNECTÉ ============
 // Obtenir le profil de l'utilisateur connecté - Protection IDOR et accès non autorisé
 router.get(
-  "/me",
+  "/profile",
   generalLimiter,
   verifyToken,
   async (req: Request, res: Response) => {
@@ -150,7 +150,7 @@ router.get(
 // ============ PUT /me — MODIFIER PROFIL ============
 // Modifier le profil de l'utilisateur connecté - Protection IDOR et injection
 router.put(
-  "/me",
+  "/profile",
   generalLimiter,
   verifyToken,
   async (req: Request, res: Response) => {
@@ -270,7 +270,7 @@ router.put(
 export default router;
 
 // gety mes stats
-router.get("/me/stats", verifyToken, async (req: Request, res: Response) => {
+router.get("/stats", verifyToken, async (req: Request, res: Response) => {
   try {
     const role = req.user!.role;
     if (role !== "candidate") {

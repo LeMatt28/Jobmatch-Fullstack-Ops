@@ -35,7 +35,7 @@ const updateCompanySchema = z.object({
 // ============ GET /company/me — PROFIL ENTREPRISE CONNECTÉE ============
 // Obtenir le profil de l'entreprise connectée - Protection IDOR et accès non autorisé
 router.get(
-  "/company/me",
+  "/profile",
   generalLimiter,
   verifyToken,
   async (req: Request, res: Response) => {
@@ -91,7 +91,7 @@ router.get(
 // ============ PUT /company/me — MODIFIER PROFIL ENTREPRISE ============
 // Modifier le profil de l'entreprise connectée - Protection IDOR et injection
 router.put(
-  "/company/me",
+  "/profile",
   generalLimiter,
   verifyToken,
   async (req: Request, res: Response) => {
@@ -165,7 +165,7 @@ router.put(
 // ============ GET /company/:id — PROFIL PUBLIC ENTREPRISE ============
 // Obtenir le profil public d'une entreprise - Protection IDOR par validation ID
 router.get(
-  "/company/:id",
+  "/:id",
   generalLimiter,
   validateIdParam, // Middleware pour valider que l'ID est un nombre positif
   async (req: Request, res: Response) => {

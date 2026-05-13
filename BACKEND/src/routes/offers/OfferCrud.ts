@@ -103,7 +103,7 @@ router.post(
 // ============ GET OFFERS FEED ============
 // Obtenir les offres pour un candidat - Protection accès non autorisé + IDOR
 router.get(
-  "/offers/feed",
+  "/feed",
   generalLimiter,
   verifyToken,
   async (req: Request, res: Response) => {
@@ -150,7 +150,7 @@ router.get(
 // ============ GET MY OFFERS ============
 // Obtenir les offres de l'entreprise - Protection IDOR
 router.get(
-  "/offers/mine",
+  "/offers",
   generalLimiter,
   verifyToken,
   async (req: Request, res: Response) => {

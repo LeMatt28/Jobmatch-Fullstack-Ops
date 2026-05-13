@@ -39,7 +39,7 @@ const companySchema = z.object({
 // ============ ENDPOINT REGISTRATION ENTREPRISE ============
 // Route d'inscription entreprise avec rate limiter et validation stricte
 router.post(
-  "/register/company",
+  "/register",
   registerLimiter,
   async (req: Request, res: Response) => {
     try {
