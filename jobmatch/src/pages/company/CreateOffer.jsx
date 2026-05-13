@@ -4,13 +4,14 @@ import { useForm } from 'react-hook-form'
 import { SidebarCompany } from '../../components/SidebarCompany'
 import { TagInput } from '../../components/TagInput'
 import { CityAutocomplete } from '../../components/CityAutocomplete'
+import { RangeSlider } from '../../components/RangeSlider'
+import { WorkModePicker } from '../../components/WorkModePicker'
 import { Button } from '../../components/ui/Button'
 import { Spinner } from '../../components/ui/Spinner'
 import { createOffer } from '../../services/companyService'
 import { formatSalary } from '../../utils/formatDate'
 
 const CONTRACT_TYPES = ['CDI', 'CDD', 'Freelance', 'Stage', 'Alternance']
-const REMOTE_OPTIONS = ['Non', 'Hybride', 'Full Remote']
 const LEVELS = ['Junior', 'Confirmé', 'Senior', 'Peu importe']
 
 const STACK_SUGGESTIONS = {
@@ -25,29 +26,39 @@ const SOFT_SUGGESTIONS = ['Leadership', 'Autonomie', 'Communication', 'Créativi
 function PreviewCard({ offer }) {
   const salary = formatSalary(offer.salaryMin, offer.salaryMax)
   return (
-    <div className="rounded-2xl overflow-hidden shadow-lg" style={{ background: '#1C1730' }}>
-      <div className="px-5 pt-5 pb-4" style={{ background: '#312A52' }}>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">ME</div>
-          <div>
-            <p className="text-white font-bold text-sm truncate">{offer.title || 'Titre du poste'}</p>
-            <p className="text-gray-300 text-xs">{offer.company} · {offer.location || 'Lieu'} · {offer.contractType}</p>
-          </div>
+    <div className="rounded-2xl overflow-hidden shadow-md bg-white border-t-4 border-brand-600">
+      <div className="px-5 pt-4 pb-3 bg-brand-50 flex items-center gap-3">
+        <div className="w-11 h-11 rounded-xl bg-brand-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">ME</div>
+        <div className="flex-1 min-w-0">
+          <p className="text-brand-900 font-semibold text-sm truncate">{offer.company}</p>
         </div>
       </div>
       <div className="px-5 py-4 space-y-3">
-        <p className="text-gray-300 text-xs leading-relaxed line-clamp-3">{offer.description || 'Description du poste...'}</p>
+        <div>
+          <h2 className="text-lg font-bold text-gray-900">{offer.title || 'Titre du poste'}</h2>
+          <p className="text-sm text-gray-500 mt-0.5">{offer.company} · {offer.location || 'Lieu'} · {offer.contractType}</p>
+        </div>
+        <div className="border-t border-gray-100" />
+        <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">{offer.description || 'Description du poste...'}</p>
         <div className="flex flex-wrap gap-1.5">
           {offer.stack?.slice(0, 4).map((s) => (
-            <span key={s} className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: '#3C3489', color: '#AFA9EC' }}>{s}</span>
+            <span key={s} className="text-xs px-2.5 py-1 rounded-full font-medium bg-brand-50 text-brand-700 border border-brand-100">{s}</span>
           ))}
         </div>
       </div>
-      <div className="px-5 py-3" style={{ background: '#252040' }}>
-        <p className="text-xs text-gray-400">
-          {salary ? `💰 ${salary}/an` : <span className="text-amber-400">💰 Salaire non communiqué</span>}
-          {offer.location ? ` · 📍 ${offer.location}` : ''}
-        </p>
+      <div className="px-5 py-3 bg-gray-50 border-t border-gray-100">
+        <div className="flex items-center justify-between">
+          <div className="text-sm space-y-0.5">
+            {salary
+              ? <p className="text-gray-900 font-semibold">💰 {salary}/an</p>
+              : <p className="text-amber-600 text-xs font-medium">💰 Salaire non communiqué</p>
+            }
+            {offer.location && <p className="text-gray-500 text-xs">📍 {offer.location}</p>}
+          </div>
+          {offer.remote && (
+            <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-medium">Remote</span>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -57,8 +68,9 @@ export default function CreateOffer() {
   const navigate = useNavigate()
   const [stack, setStack] = useState([])
   const [softSkills, setSoftSkills] = useState([])
-  const [remote, setRemote] = useState('Non')
+  const [workMode, setWorkMode] = useState('onsite')
   const [hybridDays, setHybridDays] = useState(2)
+  const [salary, setSalary] = useState([45000, 65000])
   const [hideSalary, setHideSalary] = useState(false)
   const [level, setLevel] = useState('Confirmé')
   const [location, setLocation] = useState('')
@@ -69,8 +81,6 @@ export default function CreateOffer() {
   const watchedTitle = watch('title', '')
   const watchedDesc = watch('description', '')
   const watchedContract = watch('contractType', 'CDI')
-  const watchedSalMin = watch('salaryMin', '')
-  const watchedSalMax = watch('salaryMax', '')
 
   const liveOffer = {
     title: watchedTitle,
@@ -79,15 +89,15 @@ export default function CreateOffer() {
     contractType: watchedContract,
     description: watchedDesc,
     stack,
-    salaryMin: hideSalary ? null : Number(watchedSalMin) || null,
-    salaryMax: hideSalary ? null : Number(watchedSalMax) || null,
-    remote: remote !== 'Non',
+    salaryMin: hideSalary ? null : salary[0],
+    salaryMax: hideSalary ? null : salary[1],
+    remote: workMode !== 'onsite',
   }
 
   const onSubmit = async (data) => {
     setLoading(true)
     try {
-      await createOffer({ ...data, stack, softSkills, remote, level, location, salaryMin: hideSalary ? null : Number(data.salaryMin), salaryMax: hideSalary ? null : Number(data.salaryMax) })
+      await createOffer({ ...data, stack, softSkills, workMode, hybridDays, level, location, salaryMin: hideSalary ? null : salary[0], salaryMax: hideSalary ? null : salary[1] })
       navigate('/company/dashboard')
     } finally {
       setLoading(false)
@@ -139,25 +149,13 @@ export default function CreateOffer() {
                       <CityAutocomplete value={location} onChange={setLocation} />
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-gray-500 mb-2">Télétravail</p>
-                      <div className="flex gap-2">
-                        {REMOTE_OPTIONS.map((opt) => (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => setRemote(opt)}
-                            className={`flex-1 py-2.5 rounded-xl text-xs border font-medium transition ${remote === opt ? 'bg-brand-600 text-white border-brand-600' : 'border-warm-200 text-gray-600 hover:border-brand-400'}`}
-                          >
-                            {opt}
-                          </button>
-                        ))}
-                      </div>
-                      {remote === 'Hybride' && (
-                        <div className="mt-2 flex items-center gap-2">
-                          <input type="range" min={1} max={5} value={hybridDays} onChange={(e) => setHybridDays(Number(e.target.value))} className="flex-1 accent-brand-600" />
-                          <span className="text-xs text-brand-700 font-medium w-24">{hybridDays}j/sem présentiel</span>
-                        </div>
-                      )}
+                      <p className="text-xs font-medium text-gray-500 mb-2">Mode de travail</p>
+                      <WorkModePicker
+                        value={workMode}
+                        onChange={setWorkMode}
+                        hybridDays={hybridDays}
+                        onHybridDaysChange={setHybridDays}
+                      />
                     </div>
                   </div>
                 </div>
@@ -210,7 +208,7 @@ export default function CreateOffer() {
                 <div className="space-y-4">
                   {/* Salary */}
                   <div>
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-3">
                       <p className="text-xs font-medium text-gray-500">Fourchette salariale</p>
                       <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
                         <input type="checkbox" checked={hideSalary} onChange={(e) => setHideSalary(e.target.checked)} className="accent-brand-600" />
@@ -218,16 +216,7 @@ export default function CreateOffer() {
                       </label>
                     </div>
                     {!hideSalary ? (
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="relative">
-                          <input type="number" placeholder="45000" className="w-full px-4 py-2.5 pr-12 border border-warm-200 rounded-xl text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100" {...register('salaryMin')} />
-                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">€/an</span>
-                        </div>
-                        <div className="relative">
-                          <input type="number" placeholder="65000" className="w-full px-4 py-2.5 pr-12 border border-warm-200 rounded-xl text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100" {...register('salaryMax')} />
-                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">€/an</span>
-                        </div>
-                      </div>
+                      <RangeSlider value={salary} onChange={setSalary} />
                     ) : (
                       <p className="text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
                         ⚠ Les offres avec salaire reçoivent 2× plus de matchs
