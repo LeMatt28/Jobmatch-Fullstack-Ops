@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react'
-import { X, Heart, Mail, MessageCircle, Copy } from 'lucide-react'
+import { X, Heart, Mail, Copy, Phone } from 'lucide-react'
+
+function LinkedinIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  )
+}
 import { AnimatePresence, motion } from 'framer-motion'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Navbar } from '../../components/Navbar'
 import { ScoreBadge } from '../../components/ScoreBadge'
 import { ScoreDetail, mockScoreCriteria } from '../../components/ScoreDetail'
@@ -153,12 +162,12 @@ function MatchCard({ match, onClick, size = 'normal' }) {
 }
 
 function ContactSection({ match }) {
-  const navigate = useNavigate()
   const [copied, setCopied] = useState(false)
   const { contact } = match
   if (!contact) return null
 
-  const copyEmail = () => {
+  const copyEmail = (e) => {
+    e.stopPropagation()
     navigator.clipboard.writeText(contact.email).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
@@ -168,27 +177,41 @@ function ContactSection({ match }) {
   return (
     <div className="mt-3 bg-brand-50 border border-brand-100 rounded-xl p-3">
       <div className="flex items-center gap-1.5 mb-2">
-        <Mail className="w-3.5 h-3.5 text-brand-500" />
+        <Mail className="w-3.5 h-3.5 text-brand-500" aria-hidden="true" />
         <p className="text-xs font-semibold text-brand-700">
-          Contact : {contact.name} — {contact.role}
+          {contact.name} — {contact.role}
         </p>
       </div>
-      <p className="text-xs text-brand-600 mb-2">{contact.email}</p>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <button
-          onClick={(e) => { e.stopPropagation(); navigate(`/messages/${match.id}`) }}
-          className="flex items-center gap-1.5 text-xs font-medium text-brand-700 bg-brand-100 hover:bg-brand-200 px-2.5 py-1.5 rounded-lg transition"
+          onClick={copyEmail}
+          className="flex items-center gap-1.5 text-xs font-medium text-brand-700 bg-white border border-brand-200 hover:bg-brand-50 px-2.5 py-1.5 rounded-lg transition"
         >
-          <MessageCircle className="w-3 h-3" />
-          Envoyer un message →
+          <Copy className="w-3 h-3" aria-hidden="true" />
+          {copied ? 'Copié !' : contact.email}
         </button>
-        <button
-          onClick={(e) => { e.stopPropagation(); copyEmail() }}
-          className="flex items-center gap-1.5 text-xs font-medium text-gray-600 bg-white border border-brand-100 hover:bg-gray-50 px-2.5 py-1.5 rounded-lg transition"
-        >
-          <Copy className="w-3 h-3" />
-          {copied ? 'Copié !' : "Copier l'email"}
-        </button>
+        {contact.linkedin && (
+          <a
+            href={contact.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg transition"
+          >
+            <LinkedinIcon className="w-3 h-3" />
+            LinkedIn
+          </a>
+        )}
+        {contact.phone && (
+          <a
+            href={`tel:${contact.phone}`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 px-2.5 py-1.5 rounded-lg transition"
+          >
+            <Phone className="w-3 h-3" aria-hidden="true" />
+            {contact.phone}
+          </a>
+        )}
       </div>
     </div>
   )

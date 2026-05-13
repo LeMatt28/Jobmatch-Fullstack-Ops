@@ -97,7 +97,7 @@ function OfferModal({ offer, onClose, onLike, onDislike }) {
         <div className="sticky bottom-0 bg-white border-t border-warm-200 px-6 py-4 flex gap-3">
           <button
             onClick={() => { onDislike(); onClose() }}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-red-200 text-red-500 font-semibold hover:bg-red-50 transition text-sm"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-red-500 text-red-500 font-semibold hover:bg-red-50 transition text-sm"
           >
             ✕ Passer
           </button>
@@ -141,10 +141,12 @@ export function SwipeCard({ offer, onSwipe, isTop, style }) {
     return (
       <div
         className="absolute inset-0 rounded-2xl bg-gray-100 border border-gray-200"
-        style={{ transform: 'scale(0.96)', opacity: 0.7, ...style }}
+        style={{ transform: 'scale(0.96)', ...style }}
       />
     )
   }
+
+  if (!offer) return null
 
   return (
     <>
@@ -152,7 +154,7 @@ export function SwipeCard({ offer, onSwipe, isTop, style }) {
         role="article"
         aria-label={`Offre : ${offer.title}`}
         className="absolute inset-0 rounded-2xl shadow-md cursor-grab active:cursor-grabbing overflow-hidden select-none bg-white border-t-4 border-brand-600"
-        style={{ x, rotate, ...style }}
+        style={{ x, rotate, zIndex: 1, ...style }}
         drag="x"
         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
         dragElastic={0.7}
@@ -164,7 +166,7 @@ export function SwipeCard({ offer, onSwipe, isTop, style }) {
           className="absolute inset-0 rounded-2xl flex items-start justify-start p-6 z-10 pointer-events-none"
           style={{ opacity: likeOpacity, background: 'rgba(16,185,129,0.08)' }}
         >
-          <span className="text-emerald-600 font-black text-2xl border-2 border-emerald-500 rounded-xl px-3 py-1 bg-white/80" style={{ transform: 'rotate(-15deg)' }}>LIKE ✓</span>
+          <span className="text-emerald-600 font-black text-2xl border-2 border-emerald-500 rounded-xl px-3 py-1 bg-white" style={{ transform: 'rotate(-15deg)' }}>LIKE ✓</span>
         </motion.div>
 
         {/* NOPE overlay */}
@@ -172,7 +174,7 @@ export function SwipeCard({ offer, onSwipe, isTop, style }) {
           className="absolute inset-0 rounded-2xl flex items-start justify-end p-6 z-10 pointer-events-none"
           style={{ opacity: nopeOpacity, background: 'rgba(239,68,68,0.08)' }}
         >
-          <span className="text-red-600 font-black text-2xl border-2 border-red-500 rounded-xl px-3 py-1 bg-white/80" style={{ transform: 'rotate(15deg)' }}>NOPE ✗</span>
+          <span className="text-red-600 font-black text-2xl border-2 border-red-500 rounded-xl px-3 py-1 bg-white" style={{ transform: 'rotate(15deg)' }}>NOPE ✗</span>
         </motion.div>
 
         {/* Header */}
@@ -207,7 +209,7 @@ export function SwipeCard({ offer, onSwipe, isTop, style }) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 mt-auto bg-gray-50 border-t border-gray-100">
+        <div className="px-5 py-3 mt-auto bg-white border-t border-gray-200">
           <div className="flex items-center justify-between">
             <div className="text-sm space-y-0.5">
               {salary && <p className="text-gray-900 font-semibold">💰 {salary}/an</p>}

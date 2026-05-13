@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /premium
+Disallow: /candidate/
+Disallow: /company/
+Disallow: /settings
+Disallow: /premium/checkout
+
+Sitemap: https://jobmatch.fr/sitemap.xml

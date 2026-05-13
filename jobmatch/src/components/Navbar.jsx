@@ -1,18 +1,14 @@
 import { NavLink, Link } from 'react-router-dom'
-import { Flame, Heart, User, Settings, MessageCircle } from 'lucide-react'
-import { mockConversations } from '../mocks/messages'
+import { Flame, Heart, User, Settings } from 'lucide-react'
 
 const links = [
   { to: '/candidate/feed', icon: Flame, label: 'Feed' },
   { to: '/candidate/matches', icon: Heart, label: 'Matchs' },
-  { to: '/messages', icon: MessageCircle, label: 'Messages' },
   { to: '/candidate/profile', icon: User, label: 'Profil' },
   { to: '/settings', icon: Settings, label: 'Réglages' },
 ]
 
 export function Navbar({ matchCount = 0 }) {
-  const unreadMessages = mockConversations.reduce((s, c) => s + c.unreadCount, 0)
-
   return (
     <>
       {/* Desktop top nav */}
@@ -31,9 +27,9 @@ export function Navbar({ matchCount = 0 }) {
               >
                 <span className="relative">
                   <Icon className="w-4 h-4" />
-                  {to === '/messages' && unreadMessages > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-red-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">
-                      {unreadMessages}
+                  {to === '/candidate/matches' && matchCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-brand-600 text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+                      {matchCount}
                     </span>
                   )}
                 </span>
@@ -70,11 +66,6 @@ export function Navbar({ matchCount = 0 }) {
                   {to === '/candidate/matches' && matchCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
                       {matchCount}
-                    </span>
-                  )}
-                  {to === '/messages' && unreadMessages > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-                      {unreadMessages}
                     </span>
                   )}
                 </div>

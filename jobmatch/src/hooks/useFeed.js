@@ -1,21 +1,13 @@
-import { useState, useEffect } from 'react'
-import { getFeed, swipeOffer } from '../services/candidateService'
+import { useState } from 'react'
+import { mockOffers } from '../mocks/offers'
+import { swipeOffer } from '../services/candidateService'
 
 export function useFeed() {
-  const [offers, setOffers] = useState([])
+  const [offers] = useState(mockOffers)
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [likeCount, setLikeCount] = useState(0)
   const [matchResult, setMatchResult] = useState(null)
   const [history, setHistory] = useState([])
-
-  useEffect(() => {
-    getFeed()
-      .then(setOffers)
-      .catch(setError)
-      .finally(() => setLoading(false))
-  }, [])
 
   const swipe = async (direction) => {
     if (currentIndex >= offers.length) return
@@ -45,8 +37,8 @@ export function useFeed() {
   return {
     offers,
     currentIndex,
-    loading,
-    error,
+    loading: false,
+    error: null,
     swipe,
     undo,
     canUndo: history.length > 0,
