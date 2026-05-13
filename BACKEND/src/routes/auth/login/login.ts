@@ -92,7 +92,13 @@ router.post("/login", authLimiter, async (req: Request, res: Response) => {
     return res.status(200).json({
       token,
       role,
-      user: { id: user.id, name: user.name, email: user.email },
+      user: {
+        id: user.id,
+        firstName: user.firstName ?? null,
+        lastName: user.lastName ?? null,
+        name: user.name ?? null,
+        email: user.email,
+      },
       protection:
         "authLimiter (5 tentatives/15min) + JWT expiration (7j) + Timing attack protection",
     });

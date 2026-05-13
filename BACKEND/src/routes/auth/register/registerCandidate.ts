@@ -24,11 +24,16 @@ const candidateSchema = z.object({
     .regex(/[A-Z]/, "Au moins une majuscule requise")
     .regex(/[a-z]/, "Au moins une minuscule requise")
     .regex(/[0-9]/, "Au moins un chiffre requis"), // Validation motif de passe fort
-  name: z
+  firstName: z
+    .string()
+    .min(2, "Minimum 2 caractères")
+    .max(100, "Prénom trop long")
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Caractères invalides dans le prénom"),
+  lastName: z
     .string()
     .min(2, "Minimum 2 caractères")
     .max(100, "Nom trop long")
-    .regex(/^[a-zA-Z\s'-]+$/, "Caractères invalides dans le nom"),
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Caractères invalides dans le nom"),
 });
 
 // ============ ENDPOINT REGISTRATION CANDIDAT ============
@@ -49,7 +54,7 @@ router.post(
             "Input validation + registerLimiter - Protection injection SQL/XSS/Brute force",
         });
       }
-      const { email, password, name } = result.data;
+      const { email, password, firstName, lastName } = result.data;
 
       // ============ VÉRIFIER DUPLICATION D'EMAIL ============
       // Vérifier que l'email n'existe pas déjà dans candidats
@@ -87,7 +92,8 @@ router.post(
         data: {
           email,
           password: hashed,
-          name,
+          firstName,
+          lastName,
         },
       });
 

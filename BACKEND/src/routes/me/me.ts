@@ -12,7 +12,12 @@ const router = Router();
 // ============ VALIDATION SCHÉMAS ============
 // Schéma pour mettre à jour le profil candidat - Protection injection SQL/XSS
 const updateCandidateSchema = z.object({
-  name: z
+  firstName: z
+    .string()
+    .min(2, "Minimum 2 caractères")
+    .max(100, "Prénom trop long")
+    .optional(),
+  lastName: z
     .string()
     .min(2, "Minimum 2 caractères")
     .max(100, "Nom trop long")
@@ -70,7 +75,8 @@ router.get(
           select: {
             id: true,
             email: true,
-            name: true,
+            firstName: true,
+            lastName: true,
             location: true,
             skills: true,
             softSkills: true,
@@ -183,7 +189,8 @@ router.put(
           select: {
             id: true,
             email: true,
-            name: true,
+            firstName: true,
+            lastName: true,
             location: true,
             skills: true,
             softSkills: true,
