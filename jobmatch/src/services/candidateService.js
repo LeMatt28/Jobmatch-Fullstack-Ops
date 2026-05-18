@@ -1,47 +1,26 @@
-// import api from './api'
-import { mockOffers } from '../mocks/offers'
-import { mockMatches } from '../mocks/matches'
+import api from './api'
 
 export const getFeed = async () => {
-  // TODO API RÉELLE : return api.get('/offers/feed').then(r => r.data)
-  await new Promise((r) => setTimeout(r, 400))
-  return mockOffers
+  const { data } = await api.get('/candidate/feed')
+  return data
 }
 
-export const swipeOffer = async (offerId, direction, likeCount) => {
-  // TODO API RÉELLE : return api.post(`/offers/${offerId}/swipe`, { direction }).then(r => r.data)
-  await new Promise((r) => setTimeout(r, 200))
-  const matched = direction === 'LIKE' && likeCount % 3 === 0
-  const match = matched ? mockMatches.find((m) => m.offer.id === offerId) || mockMatches[0] : null
-  return { matched, message: match?.messageIA ?? null }
+export const swipeOffer = async (offerId, direction) => {
+  const { data } = await api.post(`/candidate/swipe/${offerId}`, { direction })
+  return { matched: data.matched, message: null }
 }
 
 export const getMatches = async () => {
-  // TODO API RÉELLE : return api.get('/me/matches').then(r => r.data)
-  await new Promise((r) => setTimeout(r, 400))
-  return mockMatches
+  const { data } = await api.get('/candidate/matches')
+  return data.matches
 }
 
 export const getProfile = async () => {
-  // TODO API RÉELLE : return api.get('/me').then(r => r.data)
-  await new Promise((r) => setTimeout(r, 300))
-  return {
-    name: 'Alex Demo',
-    email: 'demo@candidat.fr',
-    location: 'Paris',
-    salaryExpected: 55000,
-    mobility: true,
-    contractTypes: ['CDI', 'Freelance'],
-    skills: ['React', 'TypeScript', 'Node.js'],
-    softSkills: ['Leadership', 'Autonomie'],
-    experience: 'Développeur frontend passionné, 4 ans d\'expérience en startup et scale-up.',
-    level: 'Confirmé',
-    scoreIA: 84,
-  }
+  const { data } = await api.get('/candidate/profile')
+  return data
 }
 
-export const updateProfile = async (data) => {
-  // TODO API RÉELLE : return api.put('/me', data).then(r => r.data)
-  await new Promise((r) => setTimeout(r, 500))
+export const updateProfile = async (payload) => {
+  const { data } = await api.put('/candidate/profile', payload)
   return data
 }

@@ -1,40 +1,34 @@
-// import api from './api'
-import { mockOffers } from '../mocks/offers'
-import { mockCandidates } from '../mocks/candidates'
-import { mockCompanies } from '../mocks/companies'
+import api from './api'
 
 export const getMyOffers = async () => {
-  // TODO API RÉELLE : return api.get('/offers/mine').then(r => r.data)
-  await new Promise((r) => setTimeout(r, 400))
-  return mockOffers.filter((o) => o.company.id === 'c1')
+  const { data } = await api.get('/company/offers')
+  return data
 }
 
-export const createOffer = async (data) => {
-  // TODO API RÉELLE : return api.post('/offers', data).then(r => r.data)
-  await new Promise((r) => setTimeout(r, 600))
-  return { id: String(Date.now()), ...data, company: { id: 'c1', name: 'TechFlow', score: 88 }, createdAt: new Date().toISOString() }
+export const createOffer = async (payload) => {
+  const { data } = await api.post('/company/offers', payload)
+  return data
 }
 
 export const getMatchedCandidates = async (offerId) => {
-  // TODO API RÉELLE : return api.get(`/matches/${offerId}`).then(r => r.data)
-  await new Promise((r) => setTimeout(r, 400))
-  return mockCandidates
+  const { data } = await api.get(`/company/matches/${offerId}`)
+  return data.matches
 }
 
 export const getCompanyProfile = async () => {
-  // TODO API RÉELLE : return api.get('/me').then(r => r.data)
-  await new Promise((r) => setTimeout(r, 300))
-  return mockCompanies[0]
+  const { data } = await api.get('/company/profile')
+  return data
 }
 
 export const getCompanyById = async (id) => {
-  // TODO API RÉELLE : return api.get(`/companies/${id}`).then(r => r.data)
-  await new Promise((r) => setTimeout(r, 300))
-  return mockCompanies.find((c) => c.id === id) || mockCompanies[0]
+  const { data } = await api.get(`/company/${id}`)
+  return data
 }
 
 export const getDashboardStats = async () => {
-  // TODO API RÉELLE : return api.get('/company/stats').then(r => r.data)
-  await new Promise((r) => setTimeout(r, 300))
-  return { activeOffers: 4, totalMatches: 17, candidatesThisWeek: 32 }
+  const { data } = await api.get('/company/offers')
+  const offers = data ?? []
+  const activeOffers = offers.filter((o) => o.isActive).length
+  const totalMatches = offers.reduce((sum, o) => sum + (o._count?.matches ?? 0), 0)
+  return { activeOffers, totalMatches, candidatesThisWeek: 0 }
 }
