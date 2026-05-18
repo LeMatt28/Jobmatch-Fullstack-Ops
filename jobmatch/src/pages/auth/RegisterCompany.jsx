@@ -81,7 +81,16 @@ export default function RegisterCompany() {
             type="password"
             placeholder="••••••••"
             error={errors.password?.message}
-            {...register('password', { required: 'Requis', minLength: { value: 6, message: '6 caractères minimum' } })}
+            {...register('password', {
+              required: 'Requis',
+              validate: (v) => {
+                if (v.length < 8) return '8 caractères minimum'
+                if (!/[A-Z]/.test(v)) return 'Au moins une majuscule'
+                if (!/[a-z]/.test(v)) return 'Au moins une minuscule'
+                if (!/[0-9]/.test(v)) return 'Au moins un chiffre'
+                return true
+              },
+            })}
           />
 
           <Input

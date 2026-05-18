@@ -6,30 +6,25 @@ import { z } from "zod";
 // ============ PROTECTION CONTRE LE BRUTE FORCE ============
 // Limiter les tentatives de connexion/inscription pour éviter les attaques par brute force
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Maximum 5 tentatives
+  windowMs: 15 * 60 * 1000,
+  max: 5,
   message: {
-    error:
-      "Trop de tentatives de connexion. Veuillez réessayer dans 15 minutes.",
-  },
-  standardHeaders: false, // Désactiver X-RateLimit dans les headers
-  legacyHeaders: false,
-  skip: (req) => {
-    // Ne pas appliquer la limite sur les requêtes GET
-    return req.method !== "POST";
-  },
-});
-
-// Limiter les tentatives d'enregistrement
-export const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 heure
-  max: 3, // Maximum 3 inscriptions par heure
-  message: {
-    error:
-      "Trop d'inscriptions. Veuillez réessayer dans une heure. Protégé contre les attaques brute force.",
+    error: "Trop de tentatives de connexion. Veuillez réessayer dans 15 minutes.",
   },
   standardHeaders: false,
   legacyHeaders: false,
+  skip: (req) => process.env.NODE_ENV === 'development' || req.method !== "POST",
+});
+
+export const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  message: {
+    error: "Trop d'inscriptions. Veuillez réessayer dans une heure.",
+  },
+  standardHeaders: false,
+  legacyHeaders: false,
+  skip: () => process.env.NODE_ENV === 'development',
 });
 
 // Rate limit général sur les routes protégées (anti-scraping)
