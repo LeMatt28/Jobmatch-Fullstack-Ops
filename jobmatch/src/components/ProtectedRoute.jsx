@@ -7,7 +7,7 @@ export function ProtectedRoute({ children, requiredRole }) {
   if (!isAuth) return <Navigate to="/login" replace />
 
   if (requiredRole && role !== requiredRole) {
-    const fallback = role === 'candidate' ? '/candidate/feed' : '/company/dashboard'
+    const fallback = role === 'candidate' ? '/candidate/feed' : role === 'admin' ? '/admin' : '/company/dashboard'
     return <Navigate to={fallback} replace />
   }
 

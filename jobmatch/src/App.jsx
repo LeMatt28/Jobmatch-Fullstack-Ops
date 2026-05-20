@@ -24,6 +24,12 @@ const PremiumCompany    = React.lazy(() => import('./pages/premium/PremiumCompan
 const CheckoutPage      = React.lazy(() => import('./pages/premium/CheckoutPage'))
 const SuccessPage       = React.lazy(() => import('./pages/premium/SuccessPage'))
 const Settings          = React.lazy(() => import('./pages/Settings'))
+const AdminDashboard    = React.lazy(() => import('./pages/admin/AdminDashboard'))
+const AdminCandidates   = React.lazy(() => import('./pages/admin/AdminCandidates'))
+const AdminCompanies    = React.lazy(() => import('./pages/admin/AdminCompanies'))
+const AdminOffers       = React.lazy(() => import('./pages/admin/AdminOffers'))
+const AdminMatches      = React.lazy(() => import('./pages/admin/AdminMatches'))
+const AdminSubscriptions = React.lazy(() => import('./pages/admin/AdminSubscriptions'))
 
 const pageVariants = {
   initial: { opacity: 0, y: 8 },
@@ -76,6 +82,14 @@ function AppRoutes() {
           <Route path="/company/offer/new" element={<ProtectedRoute requiredRole="company"><AnimatedPage><CreateOffer /></AnimatedPage></ProtectedRoute>} />
           <Route path="/company/offer/:id/matches" element={<ProtectedRoute requiredRole="company"><AnimatedPage><MatchedCandidates /></AnimatedPage></ProtectedRoute>} />
           <Route path="/company/profile" element={<ProtectedRoute requiredRole="company"><AnimatedPage><CompanyProfile /></AnimatedPage></ProtectedRoute>} />
+
+          {/* Admin protected */}
+          <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/candidates" element={<ProtectedRoute requiredRole="admin"><AdminCandidates /></ProtectedRoute>} />
+          <Route path="/admin/companies" element={<ProtectedRoute requiredRole="admin"><AdminCompanies /></ProtectedRoute>} />
+          <Route path="/admin/offers" element={<ProtectedRoute requiredRole="admin"><AdminOffers /></ProtectedRoute>} />
+          <Route path="/admin/matches" element={<ProtectedRoute requiredRole="admin"><AdminMatches /></ProtectedRoute>} />
+          <Route path="/admin/subscriptions" element={<ProtectedRoute requiredRole="admin"><AdminSubscriptions /></ProtectedRoute>} />
 
           {/* Shared */}
           <Route path="/settings" element={<ProtectedRoute><AnimatedPage><Settings /></AnimatedPage></ProtectedRoute>} />

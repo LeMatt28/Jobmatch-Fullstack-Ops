@@ -24,7 +24,7 @@ export default function Login() {
     try {
       const { token, role, user } = await loginUser(email, password)
       login(token, role, user)
-      navigate(role === 'candidate' ? '/candidate/feed' : '/company/dashboard', { replace: true })
+      navigate(role === 'candidate' ? '/candidate/feed' : role === 'admin' ? '/admin' : '/company/dashboard', { replace: true })
     } catch (err) {
       setApiError(err.message || 'Erreur de connexion')
     } finally {
@@ -94,6 +94,7 @@ export default function Login() {
           <p className="font-medium mb-1">Comptes démo</p>
           <p>Candidat : demo@candidat.fr / demo</p>
           <p>Entreprise : demo@entreprise.fr / demo</p>
+          <p>Admin : admin@jobmatch.fr / admin</p>
         </div>
       </motion.div>
     </div>

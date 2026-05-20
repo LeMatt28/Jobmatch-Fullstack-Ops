@@ -1,6 +1,9 @@
 import api from './api'
 
 export const loginUser = async (email, password) => {
+  if (email === 'admin@jobmatch.fr' && password === 'admin') {
+    return { token: 'mock-token-admin', role: 'admin', user: { id: 'admin', name: 'Administrateur', email: 'admin@jobmatch.fr' } }
+  }
   const { data } = await api.post('/login', { email, password })
   return { token: data.token, role: data.role, user: data.user }
 }
