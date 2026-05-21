@@ -8,6 +8,7 @@ import { Spinner } from './components/ui/Spinner'
 
 const LandingPage       = React.lazy(() => import('./pages/auth/LandingPage'))
 const Login             = React.lazy(() => import('./pages/auth/Login'))
+const OAuthCallback     = React.lazy(() => import('./pages/auth/OAuthCallback'))
 const RegisterCandidate = React.lazy(() => import('./pages/auth/RegisterCandidate'))
 const RegisterCompany   = React.lazy(() => import('./pages/auth/RegisterCompany'))
 const ProfileSetup      = React.lazy(() => import('./pages/candidate/ProfileSetup'))
@@ -60,6 +61,7 @@ function AppRoutes() {
           {/* Public */}
           <Route path="/" element={<AnimatedPage><LandingPage /></AnimatedPage>} />
           <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
+          <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="/register/candidate" element={<AnimatedPage><RegisterCandidate /></AnimatedPage>} />
           <Route path="/register/company" element={<AnimatedPage><RegisterCompany /></AnimatedPage>} />
 

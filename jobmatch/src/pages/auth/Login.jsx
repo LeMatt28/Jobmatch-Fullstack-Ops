@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Eye, EyeOff } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -8,12 +8,14 @@ import { loginUser } from '../../services/authService'
 import { Input } from '../../components/ui/Input'
 import { Button } from '../../components/ui/Button'
 import { Spinner } from '../../components/ui/Spinner'
+import OAuthButtons from '../../components/OAuthButtons'
 
 export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [showPwd, setShowPwd] = useState(false)
-  const [apiError, setApiError] = useState('')
+  const [apiError, setApiError] = useState(searchParams.get('error') ?? '')
   const [loading, setLoading] = useState(false)
 
   const { register, handleSubmit, formState: { errors } } = useForm()
@@ -82,6 +84,15 @@ export default function Login() {
             {loading ? <Spinner size="sm" /> : 'Se connecter'}
           </Button>
         </form>
+
+        <div className="mt-5">
+          <div className="relative flex items-center gap-3 mb-4">
+            <div className="flex-1 border-t border-gray-200" />
+            <span className="text-xs text-gray-400">ou continuer avec</span>
+            <div className="flex-1 border-t border-gray-200" />
+          </div>
+          <OAuthButtons />
+        </div>
 
         <div className="mt-6 text-center text-sm text-gray-500">
           Pas encore de compte ?{' '}
