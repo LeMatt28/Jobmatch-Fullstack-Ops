@@ -69,6 +69,13 @@ router.post("/login", authLimiter, async (req: Request, res: Response) => {
     }
 
     // ============ VÉRIFICATION MOT DE PASSE ============
+    // Si le compte a été créé via SSO, il n'a pas de mot de passe en base
+    if (!user.password) {
+      return res.status(401).json({
+        error: "Ce compte utilise une connexion SSO (Google, Discord ou GitHub). Veuillez vous connecter via le provider utilisé lors de l'inscription.",
+      });
+    }
+
     // Comparer avec le hash bcrypt - Protection contre les attaques brute force via time constant
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {

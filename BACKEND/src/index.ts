@@ -21,6 +21,7 @@ import matches from "./routes/matches/matches";
 import company from "./routes/compagny/compagnyCrud";
 import reviews from "./routes/reviews/Reviews";
 import admin from "./routes/admin/admin";
+import oauthRoutes from "./routes/auth/oauth/oauthRoutes";
 
 // env
 dotenv.config();
@@ -78,6 +79,7 @@ app.use(authLimiter);
 app.use("/candidate", registerCandidate); // POST /candidate/register
 app.use("/company",   registerCompany);   // POST /company/register
 app.use("/",          login);             // POST /login
+app.use("/auth",      oauthRoutes);       // GET /auth/:provider/redirect, GET /auth/:provider/callback
 
 // ============ ROUTES PROTÉGÉES ============
 app.use("/candidate", me);      // GET|PUT /candidate/profile, GET /candidate/stats
