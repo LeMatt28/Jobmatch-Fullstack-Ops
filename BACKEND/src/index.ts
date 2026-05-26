@@ -1,4 +1,5 @@
 // imports
+import http from "http";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -100,7 +101,15 @@ app.use("/", admin);
 app.use(errorHandle);
 
 // ============ DÉMARRAGE DU SERVEUR ============
-app.listen(port, () => {
+const server = http.createServer(app);
+
+// Node.js 18+ retourne HTTP 426 automatiquement pour les requêtes avec header
+// Upgrade (h2c, websocket) sans gestionnaire — on ferme proprement avec 400.
+server.on("upgrade", (_req, socket) => {
+  socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
+});
+
+server.listen(port, () => {
   console.log(`Backend listening on http://localhost:${port}`);
   console.log("Security middleware enabled:");
   console.log("  - Helmet (HTTP security headers)");
